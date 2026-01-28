@@ -1,164 +1,222 @@
-import { Link } from 'react-router-dom';
-import Header from '../../components/layout/Header';
-import Button from '../../components/ui/Button';
+/* eslint-disable no-unused-vars */
+import { Link, useNavigate } from "react-router-dom";
+import Header from "../../components/layout/Header";
+import Button from "../../components/ui/Button";
+import DotGrid from "@/components/animated/DotGrid";
+import { motion } from "motion/react";
+import { InteractiveHoverButton } from "@/components/animated/InteractiveHoverButton";
+import BenefitsSection from "../../components/sections/BenefitsSection";
+import ScrollReveal from "@/components/animated/ScrollReveal";
+import HowItWorksSection from "../../components/sections/HowItWorksSection";
+import TechStackSection from "../../components/sections/TechStackSection";
+import FeaturedChallenges from "../../components/sections/FeaturedChallengesSection";
+import CTASection from "../../components/sections/CTASection";
+import Footer from "../../components/layout/Footer";
+import useAuthStore from "../../stores/auth/authStore";
+
+const COMPANY_LOGOS = [
+  [
+    { name: "Airbnb", src: "/public/amazon.svg" },
+    { name: "Stripe", src: "/public/netflix.svg" },
+    { name: "LinkedIn", src: "/public/google.svg" },
+    { name: "Atlassian", src: "/public/calendly.svg" },
+    { name: "IBM", src: "/public/coinbase.svg" },
+    { name: "Snap Inc.", src: "/public/digital.svg" },
+  ],
+  [
+    { name: "DoorDash", src: "/public/jira.svg" },
+    { name: "Adobe", src: "/public/opera.svg" },
+    { name: "PayPal", src: "/public/reddit.svg" },
+    { name: "Goldman Sachs", src: "/public/square.svg" },
+    { name: "Canva", src: "/public/youtube.svg" },
+  ],
+];
 
 const LandingPage = () => {
+  const navigate = useNavigate();
+  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
+
+  const handleGetStartedClick = () => {
+    if (isAuthenticated) {
+      navigate("/dashboard");
+    } else {
+      navigate("/signup");
+    }
+  };
+
   return (
-    <div className="min-h-screen bg-gradient-to-br from-blue-50 via-white to-purple-50">
+    <div className="min-h-screen">
+      <div
+        style={{
+          width: "100%",
+          height: "800px",
+          position: "absolute",
+          "z-index": "-1",
+        }}
+      >
+        <DotGrid
+          dotSize={5}
+          gap={15}
+          baseColor="#f8f8f8"
+          activeColor="#f75d31"
+          proximity={120}
+          shockRadius={250}
+          shockStrength={5}
+          resistance={750}
+          returnDuration={1.5}
+        />
+      </div>
+
       <Header />
-      
+
       <main>
         {/* Hero Section */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
+        <motion.section
+          initial={{ opacity: 0 }}
+          animate={{ opacity: 1 }}
+          transition={{ duration: 1, delay: 0.3 }}
+          className="max-w-7xl mx-auto -mt-8  px-4 sm:px-6 lg:px-8 py-20"
+        >
           <div className="text-center">
-            <h1 className="text-5xl md:text-6xl font-bold text-gray-900 mb-6">
-              Build Real Features.
-              <span className="block text-blue-600">Compete. Get Judged.</span>
-            </h1>
-            <p className="text-xl text-gray-600 mb-8 max-w-3xl mx-auto">
-              A competitive platform where web developers build real product features using any tools (including AI) 
-              and get judged on code quality, UX, and engineering maturity.
-            </p>
-            <div className="flex gap-4 justify-center">
-              <Link to="/signup">
-                <Button variant="primary" className="text-lg px-8 py-4">
-                  Get Started
-                </Button>
-              </Link>
-              <Link to="/login">
-                <Button variant="outline" className="text-lg px-8 py-4">
-                  Sign In
-                </Button>
-              </Link>
-            </div>
+            <motion.h1
+              initial={{ opacity: 0, y: 30 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.9,
+                delay: 0.5,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="text-5xl md:text-7xl font-medium text-[#302630] mb-6"
+            >
+              Stop LeetCoding.
+              <motion.span
+                initial={{ opacity: 0, y: 20 }}
+                animate={{ opacity: 1, y: 0 }}
+                transition={{
+                  duration: 0.9,
+                  delay: 0.7,
+                  ease: [0.22, 1, 0.36, 1],
+                }}
+                className="block text-[#f75d31]"
+              >
+                Start Engineering.
+              </motion.span>
+            </motion.h1>
+            <motion.p
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.8,
+                delay: 0.9,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="text-lg text-gray-600 mb-8 max-w-3xl mx-auto"
+            >
+              The competitive platform where you build real features using your
+              own tools (including AI). Win based on code quality, UX, and
+              engineering maturity.
+            </motion.p>
+            <motion.div
+              initial={{ opacity: 0, scale: 0.9 }}
+              animate={{ opacity: 1, scale: 1 }}
+              transition={{
+                duration: 0.6,
+                delay: 1.1,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="flex gap-4 justify-center mb-20"
+            >
+              <InteractiveHoverButton
+                onClick={handleGetStartedClick}
+                className="bg-[#302630] hover:bg-[#f75d31] hover:border-[#f75d31] py-3 px-8 text-white text-lg cursor-pointer"
+              >
+                Get Started
+              </InteractiveHoverButton>
+            </motion.div>
+
+            {/* Company Logos */}
+            <motion.div
+              initial={{ opacity: 0, y: 20 }}
+              animate={{ opacity: 1, y: 0 }}
+              transition={{
+                duration: 0.8,
+                delay: 1.3,
+                ease: [0.22, 1, 0.36, 1],
+              }}
+              className="mt-12 space-y-6"
+            >
+              {COMPANY_LOGOS.map((row, rowIndex) => (
+                <motion.div
+                  key={rowIndex}
+                  initial={{ opacity: 0, y: 20 }}
+                  animate={{ opacity: 1, y: 0 }}
+                  transition={{ duration: 0.6, delay: 1.4 + rowIndex * 0.1 }}
+                  className="flex justify-center items-center gap-8 md:gap-12 lg:gap-16 flex-wrap"
+                >
+                  {row.map((company, idx) => (
+                    <motion.img
+                      key={company.name}
+                      initial={{ opacity: 0, scale: 0.8 }}
+                      animate={{ opacity: 1, scale: 1 }}
+                      transition={{
+                        duration: 0.5,
+                        delay: 1.5 + rowIndex * 0.1 + idx * 0.05,
+                      }}
+                      src={company.src}
+                      alt={company.name}
+                      className="h-10 object-contain  transition-opacity "
+                    />
+                  ))}
+                </motion.div>
+              ))}
+            </motion.div>
           </div>
+        </motion.section>
+
+        {/* Benefits Section */}
+        <section id="benefits">
+          <BenefitsSection />
         </section>
 
-        {/* Features Section */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20">
-          <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-            Why Buildafeature?
-          </h2>
-          <div className="grid md:grid-cols-3 gap-8">
-            <div className="bg-white p-6 rounded-xl shadow-lg">
-              <div className="text-4xl mb-4">🤖</div>
-              <h3 className="text-xl font-semibold mb-2">AI-Friendly</h3>
-              <p className="text-gray-600">
-                AI is allowed and encouraged. Focus on quality over speed, not algorithm puzzles.
-              </p>
-            </div>
-            <div className="bg-white p-6 rounded-xl shadow-lg">
-              <div className="text-4xl mb-4">⚡</div>
-              <h3 className="text-xl font-semibold mb-2">Real Challenges</h3>
-              <p className="text-gray-600">
-                Build real product features in 15-30 minutes. Practice mode or compete in real-time.
-              </p>
-            </div>
-            <div className="bg-white p-6 rounded-xl shadow-lg">
-              <div className="text-4xl mb-4">🏆</div>
-              <h3 className="text-xl font-semibold mb-2">Quality Judging</h3>
-              <p className="text-gray-600">
-                Get judged on code quality, UX, and engineering maturity, not just correctness.
-              </p>
-            </div>
-          </div>
-        </section>
+        {/* Description Scroll Reveal */}
+        <div className="bg-[#F9F6F4] min-h-screen flex items-center justify-center py-24 relative overflow-hidden">
+          <div className="absolute top-0 right-0 w-125 h-125 bg-[#f75d31]/5 rounded-full blur-[100px] pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
+          <div className="absolute bottom-0 left-0 w-75 h-75 bg-[#302630]/5 rounded-full blur-[80px] pointer-events-none translate-y-1/2 -translate-x-1/2"></div>
+
+          <ScrollReveal
+            baseOpacity={0}
+            enableBlur={true}
+            baseRotation={5}
+            blurStrength={10}
+            containerClassName="max-w-[1000px] -mt-32 mx-auto px-6 relative z-10"
+            textClassName="text-3xl md:text-5xl lg:text-5xl font-medium text-[#302630] leading-[1.2] text-center tracking-tight"
+          >
+            Engineering is about solving problems, not memorizing algorithms. We
+            evaluate you on what actually matters: clean code, user experience,
+            and architectural decisions.
+          </ScrollReveal>
+        </div>
 
         {/* How It Works */}
-        <section className="bg-white py-20">
-          <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
-            <h2 className="text-3xl font-bold text-center text-gray-900 mb-12">
-              How It Works
-            </h2>
-            <div className="grid md:grid-cols-2 gap-12 items-center">
-              <div>
-                <div className="space-y-6">
-                  <div className="flex gap-4">
-                    <div className="flex-shrink-0 w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
-                      1
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-lg mb-2">Choose Your Mode</h3>
-                      <p className="text-gray-600">
-                        Practice mode for async challenges or multiplayer mode for real-time competition.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex gap-4">
-                    <div className="flex-shrink-0 w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
-                      2
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-lg mb-2">Build in Monaco Editor</h3>
-                      <p className="text-gray-600">
-                        Code in a full-featured editor with virtual file system and preloaded boilerplate.
-                      </p>
-                    </div>
-                  </div>
-                  <div className="flex gap-4">
-                    <div className="flex-shrink-0 w-10 h-10 bg-blue-600 text-white rounded-full flex items-center justify-center font-bold">
-                      3
-                    </div>
-                    <div>
-                      <h3 className="font-semibold text-lg mb-2">Submit & Get Judged</h3>
-                      <p className="text-gray-600">
-                        Get AI feedback on code quality, UX, and engineering maturity. See your score and rank.
-                      </p>
-                    </div>
-                  </div>
-                </div>
-              </div>
-              <div className="bg-gradient-to-br from-blue-100 to-purple-100 rounded-2xl p-8">
-                <h3 className="text-2xl font-bold mb-4">Scoring System</h3>
-                <ul className="space-y-3">
-                  <li className="flex justify-between">
-                    <span>Functional Tests</span>
-                    <span className="font-semibold">30%</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Code Quality (AI)</span>
-                    <span className="font-semibold">20%</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>UI/UX Quality</span>
-                    <span className="font-semibold">20%</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Engineering Maturity</span>
-                    <span className="font-semibold">15%</span>
-                  </li>
-                  <li className="flex justify-between">
-                    <span>Extra Features</span>
-                    <span className="font-semibold">15%</span>
-                  </li>
-                </ul>
-              </div>
-            </div>
-          </div>
+        <section id="how-it-works">
+          <HowItWorksSection />
         </section>
 
-        {/* CTA Section */}
-        <section className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-20 text-center">
-          <h2 className="text-3xl font-bold text-gray-900 mb-4">
-            Ready to Start Building?
-          </h2>
-          <p className="text-xl text-gray-600 mb-8">
-            Join developers competing to build the best features.
-          </p>
-          <Link to="/signup">
-            <Button variant="primary" className="text-lg px-8 py-4">
-              Create Your Account
-            </Button>
-          </Link>
+        {/* Tech Stack */}
+        <section id="tech-stack">
+          <TechStackSection />
         </section>
+
+        {/* Featured Challenges */}
+        <section id="challenges">
+          <FeaturedChallenges />
+        </section>
+
+        <CTASection />
       </main>
 
       {/* Footer */}
-      <footer className="bg-gray-900 text-white py-8">
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 text-center">
-          <p>&copy; 2024 Buildafeature. All rights reserved.</p>
-        </div>
-      </footer>
+      <Footer />
     </div>
   );
 };

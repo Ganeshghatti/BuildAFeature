@@ -1,15 +1,14 @@
-const express = require('express');
-const cors = require('cors');
-const helmet = require('helmet');
-const cookieParser = require('cookie-parser');
-const config = require('./core/config');
-const { connectDB } = require('./db/session');
-const errorHandler = require('./middlewares/errorHandler');
-const notFoundHandler = require('./middlewares/notFoundHandler');
-const { generalLimiter } = require('./middlewares/rateLimiter');
+const express = require("express");
+const cors = require("cors");
+const helmet = require("helmet");
+const cookieParser = require("cookie-parser");
+const config = require("./core/config");
+const { connectDB } = require("./db/session");
+const errorHandler = require("./middlewares/errorHandler");
+const notFoundHandler = require("./middlewares/notFoundHandler");
 
 // Import routers
-const authRouter = require('./api/v1/routers/authRouter');
+const authRouter = require("./api/v1/routers/authRouter");
 
 /**
  * Create and configure Express application
@@ -26,7 +25,7 @@ const createApp = () => {
     cors({
       origin: config.cors.origin,
       credentials: config.cors.credentials,
-    })
+    }),
   );
 
   // Cookie parser middleware (must be before body parsers)
@@ -36,20 +35,17 @@ const createApp = () => {
   app.use(express.json());
   app.use(express.urlencoded({ extended: true }));
 
-  // Apply general rate limiter to all API routes
-  app.use('/api', generalLimiter);
-
-  // Health check endpoint (no rate limit)
-  app.get('/health', (req, res) => {
+  // Health check endpoint
+  app.get("/health", (req, res) => {
     res.status(200).json({
       success: true,
-      message: 'Server is running',
+      message: "Server is running",
       timestamp: new Date().toISOString(),
     });
   });
 
   // API routes
-  app.use('/api/auth', authRouter);
+  app.use("/api/auth", authRouter);
 
   // 404 handler (must be after all routes)
   app.use(notFoundHandler);
