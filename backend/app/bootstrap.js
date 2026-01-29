@@ -10,6 +10,7 @@ const notFoundHandler = require("./middlewares/notFoundHandler");
 // Import routers
 const authRouter = require("./api/v1/routers/authRouter");
 const challengeRouter = require("./api/v1/routers/challengeRouter");
+const submissionRouter = require("./api/v1/routers/submissionRouter");
 
 /**
  * Create and configure Express application
@@ -48,6 +49,7 @@ const createApp = () => {
   // API routes
   app.use("/api/auth", authRouter);
   app.use("/api/challenges", challengeRouter);
+  app.use("/api/submissions", submissionRouter);
 
   // 404 handler (must be after all routes)
   app.use(notFoundHandler);

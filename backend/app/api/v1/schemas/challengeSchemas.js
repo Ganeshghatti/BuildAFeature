@@ -2,7 +2,7 @@ const { z } = require('zod');
 const { validateBody, validateQuery } = require('../../../utils/validation');
 
 const statusEnum = z.enum(['draft', 'live', 'archived']);
-const difficultyEnum = z.enum(['easy', 'medium', 'hard']);
+const difficultyEnum = z.enum(['easy', 'medium', 'hard', 'expert', 'master']);
 const typeEnum = z.enum(['free', 'premium']);
 
 const slugSchema = z

@@ -14,7 +14,6 @@ const challengeSchema = new mongoose.Schema(
     slug: {
       type: String,
       trim: true,
-      sparse: true,
       maxlength: 80,
     },
     status: {
@@ -36,7 +35,7 @@ const challengeSchema = new mongoose.Schema(
     },
     difficulty: {
       type: String,
-      enum: ['easy', 'medium', 'hard'],
+      enum: ['easy', 'medium', 'hard', 'expert', 'master'],
       required: true,
     },
     timeAllowed: {

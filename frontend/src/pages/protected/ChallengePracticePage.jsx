@@ -6,11 +6,14 @@ import DotGrid from "@/components/animated/DotGrid";
 import { motion } from "motion/react";
 import { ArrowLeft, Clock, CheckCircle2, Star } from "lucide-react";
 
-const difficultyColors = {
-  easy: "bg-emerald-100 text-emerald-800",
-  medium: "bg-amber-100 text-amber-800",
-  hard: "bg-rose-100 text-rose-800",
+const difficultyConfig = {
+  easy: { class: "bg-emerald-100 text-emerald-800", label: "Easy" },
+  medium: { class: "bg-amber-100 text-amber-800", label: "Medium" },
+  hard: { class: "bg-orange-100 text-orange-800", label: "Hard" },
+  expert: { class: "bg-rose-100 text-rose-800", label: "Expert" },
+  master: { class: "bg-violet-100 text-violet-800", label: "Master" },
 };
+const getDifficulty = (d) => difficultyConfig[d] || { class: "bg-gray-100 text-gray-700", label: d || "—" };
 
 const ChallengePracticePage = () => {
   const { id } = useParams();
@@ -92,10 +95,10 @@ const ChallengePracticePage = () => {
           <div className="flex flex-wrap items-center gap-2 mb-4">
             <span
               className={`px-2.5 py-1 rounded-full text-sm font-medium ${
-                difficultyColors[challenge.difficulty] || "bg-gray-100 text-gray-700"
+                getDifficulty(challenge.difficulty).class
               }`}
             >
-              {challenge.difficulty}
+              {getDifficulty(challenge.difficulty).label}
             </span>
             <span className="flex items-center gap-1 text-sm text-gray-500">
               <Clock className="w-4 h-4" />

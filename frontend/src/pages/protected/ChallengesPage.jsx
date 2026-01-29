@@ -6,11 +6,14 @@ import DotGrid from "@/components/animated/DotGrid";
 import { motion } from "motion/react";
 import { TargetIcon, Clock, Zap, ArrowRight } from "lucide-react";
 
-const difficultyColors = {
-  easy: "bg-emerald-100 text-emerald-800",
-  medium: "bg-amber-100 text-amber-800",
-  hard: "bg-rose-100 text-rose-800",
+const difficultyConfig = {
+  easy: { class: "bg-emerald-100 text-emerald-800", label: "Easy" },
+  medium: { class: "bg-amber-100 text-amber-800", label: "Medium" },
+  hard: { class: "bg-orange-100 text-orange-800", label: "Hard" },
+  expert: { class: "bg-rose-100 text-rose-800", label: "Expert" },
+  master: { class: "bg-violet-100 text-violet-800", label: "Master" },
 };
+const getDifficulty = (d) => difficultyConfig[d] || { class: "bg-gray-100 text-gray-700", label: d || "—" };
 
 const ChallengesPage = () => {
   const [challenges, setChallenges] = useState([]);
@@ -110,10 +113,10 @@ const ChallengesPage = () => {
                     </h2>
                     <span
                       className={`shrink-0 px-2 py-0.5 rounded-full text-xs font-medium ${
-                        difficultyColors[ch.difficulty] || "bg-gray-100 text-gray-700"
+                        getDifficulty(ch.difficulty).class
                       }`}
                     >
-                      {ch.difficulty}
+                      {getDifficulty(ch.difficulty).label}
                     </span>
                   </div>
                   <p className="text-sm text-gray-600 line-clamp-2 mb-4">
