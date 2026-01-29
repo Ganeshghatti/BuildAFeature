@@ -1,0 +1,10 @@
+You are evaluating a "Smart Search with Debounce" challenge submission.
+
+Check for:
+1. Debounce implementation (around 300ms) - no search on every keystroke
+2. Cleanup of pending requests/timeouts on unmount or new input
+3. Loading and empty states
+4. Accessible input (labels, focus management)
+5. No unnecessary re-renders (e.g. debounce not recreated every render)
+
+Score code quality, UX, and correctness. Be concise.

@@ -1,0 +1,7 @@
+{
+  "functionalTests": 0.3,
+  "codeQuality": 0.2,
+  "uiUxQuality": 0.2,
+  "engineeringMaturity": 0.15,
+  "extraFeatures": 0.15
+}

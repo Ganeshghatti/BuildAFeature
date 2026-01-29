@@ -1,0 +1,62 @@
+[
+  {
+    "_id": "challenge-smart-search-001",
+    "slug": "smart-search-with-debounce",
+    "status": "live",
+    "name": "Smart Search with Debounce",
+    "description": "Build a search input that debounces API calls and shows results. Focus on performance and UX.",
+    "difficulty": "easy",
+    "timeAllowed": 15,
+    "type": "free",
+    "thumbnailUrl": "",
+    "tags": ["react", "frontend", "async", "debounce"],
+    "compulsoryFeatures": [
+      "Debounced search input (300ms delay)",
+      "Display list of results",
+      "Loading state while fetching",
+      "Empty state when no results"
+    ],
+    "niceToHaveFeatures": [
+      "Clear button",
+      "Keyboard navigation",
+      "Highlight matching text"
+    ],
+    "templatePath": "/challenges/smart-search/template",
+    "aiPromptPath": "/challenges/smart-search/ai.prompt.txt",
+    "scoringConfigPath": "/challenges/smart-search/scoring.json",
+    "testPath": "/challenges/smart-search/tests",
+    "version": 1,
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z"
+  },
+  {
+    "_id": "challenge-infinite-scroll-002",
+    "slug": "infinite-scroll-feed",
+    "status": "live",
+    "name": "Infinite Scroll Feed",
+    "description": "Implement an infinite scroll list that loads more items as the user scrolls.",
+    "difficulty": "medium",
+    "timeAllowed": 25,
+    "type": "free",
+    "thumbnailUrl": "",
+    "tags": ["react", "frontend", "infinite-scroll", "hooks"],
+    "compulsoryFeatures": [
+      "Load initial list of items",
+      "Load more on scroll near bottom",
+      "Loading indicator for next page",
+      "No duplicate requests"
+    ],
+    "niceToHaveFeatures": [
+      "Virtualized list for large datasets",
+      "Pull-to-refresh",
+      "Error retry"
+    ],
+    "templatePath": "/challenges/infinite-scroll/template",
+    "aiPromptPath": "/challenges/infinite-scroll/ai.prompt.txt",
+    "scoringConfigPath": "/challenges/infinite-scroll/scoring.json",
+    "testPath": "/challenges/infinite-scroll/tests",
+    "version": 1,
+    "createdAt": "2025-01-01T00:00:00.000Z",
+    "updatedAt": "2025-01-01T00:00:00.000Z"
+  }
+]

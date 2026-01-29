@@ -1,4 +1,5 @@
 require('dotenv').config();
+const path = require('path');
 
 const config = {
   // Server Configuration
@@ -45,6 +46,11 @@ const config = {
     origin: process.env.CORS_ORIGIN || 'http://localhost:5173',
     credentials: true,
   },
+
+  // Challenges static data (no DB for public fetch – faster)
+  challengesIndexPath:
+    process.env.CHALLENGES_INDEX_PATH ||
+    path.join(__dirname, '../../../challenges/index.json'),
 };
 
 module.exports = config;

@@ -66,6 +66,15 @@ const DashboardPage = () => {
                   <span className="hidden sm:inline">Home</span>
                 </Button>
               </Link>
+              <Link to="/challenges">
+                <Button
+                  variant="secondary"
+                  className="text-sm flex items-center gap-2"
+                >
+                  <TargetIcon size={16} />
+                  <span className="hidden sm:inline">Challenges</span>
+                </Button>
+              </Link>
               <Button
                 variant="secondary"
                 onClick={handleLogout}
@@ -139,9 +148,11 @@ const DashboardPage = () => {
               Build features at your own pace. Get AI feedback and improve your
               skills.
             </p>
-            <div className="inline-block py-2 text-[#f75d31] rounded-full text-sm font-medium">
-              Coming Soon
-            </div>
+            <Link to="/challenges">
+              <InteractiveHoverButton className="w-full sm:w-auto">
+                Browse challenges
+              </InteractiveHoverButton>
+            </Link>
           </motion.div>
 
           {/* Multiplayer Mode Card */}
