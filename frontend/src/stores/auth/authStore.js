@@ -46,10 +46,11 @@ const useAuthStore = create((set, get) => ({
   },
 
   // Verify OTP and complete signup
-  verifySignupOTP: async (email, otp, phone = null, password) => {
+  verifySignupOTP: async (name, email, otp, phone = null, password) => {
     set({ isLoading: true, error: null });
     try {
       const response = await authEndpoints.verifySignupOTP(
+        name,
         email,
         otp,
         phone,
