@@ -1,7 +1,7 @@
 /* eslint-disable react-hooks/set-state-in-effect */
 /* eslint-disable no-unused-vars */
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { challengeEndpoints } from "../../api/endpoints/challenges";
 import Button from "../../components/ui/Button";
 import DotGrid from "@/components/animated/DotGrid";
@@ -195,14 +195,13 @@ const ChallengeDetailPage = () => {
 
                 {/* Start Button */}
                 <div className="space-y-3 w-full flex flex-col items-center lg:items-start">
-                  <button className="w-full lg:w-1/2 bg-gray-400 hover:bg-[#302630] text-white font-bold py-4 px-6 rounded-full cursor-pointer flex items-center justify-center gap-2 transition-colors uppercase tracking-wide">
+                  <Link to={`/challenges/${id}/practice`} className="w-full lg:w-1/2 bg-gray-400 hover:bg-[#302630] text-white font-bold py-4 px-6 rounded-full cursor-pointer flex items-center justify-center gap-2 transition-colors uppercase tracking-wide">
                     <Lock className="w-5 h-5" />
-                    Coming Soon
-                  </button>
+                    Start Challenge
+                  </Link>
                 </div>
               </div>
 
-              {/* Right Column - Preview */}
               <div className="space-y-4">
                 {/* Preview Image Container */}
                 <div className="bg-gray-50 rounded-xl border-2 border-gray-200 p-6 min-h-100 flex items-center justify-center">

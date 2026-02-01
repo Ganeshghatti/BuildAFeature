@@ -181,7 +181,7 @@ const ChallengePracticePage = () => {
               Editor and submission flow will be wired here (Monaco + VFS).
             </p>
             <Button onClick={startChallenge} variant="primary">
-              Open in editor (coming soon)
+              Open in Editor
             </Button>
           </div>
         </motion.article>

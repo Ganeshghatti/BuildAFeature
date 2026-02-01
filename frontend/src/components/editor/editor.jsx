@@ -18,7 +18,7 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { useSearchParams } from "react-router-dom";
+import { useNavigate, useSearchParams } from "react-router-dom";
 import { apiClient } from "@/api/client";
 import FileSidebar from "./fileExplorer/fileSidebar";
 import Button from "../ui/Button";
@@ -46,6 +46,8 @@ export default function MonacoEditor() {
   const [activeFile, setActiveFile] = useState(null);
   const [activePath, setActivePath] = useState(null);
   const editorRef = useRef(null);
+  const submitRef = useRef(false);
+  const router = useNavigate();
 
   useEffect(() => {
     apiClient
@@ -118,11 +120,12 @@ export default function MonacoEditor() {
   const getFileName = (path) => path?.split("\\").pop() || path;
 
   const submitHandler = async () => {
-    if (!timeOver) {
-      setTimeOver(true);
-      setendTime(() => localStorage.removeItem("ChallengeEndtime"));
-    }
-    alert("your test is submitted successfully");
+    if (submitRef.current) return;
+    submitRef.current = true;
+
+    setTimeOver(true);
+    localStorage.removeItem("ChallengeEndtime") ;
+    router(`/challenge_submitted/${challengeId}`);
   };
 
   const fileViewHandler = () => {
@@ -131,6 +134,10 @@ export default function MonacoEditor() {
       setviewfile(false);
     }
   };
+
+  const ExportHandler = async () => {};
+
+  const Importhandler = async () => {};
 
   return (
     <div className="w-full min-h-screen flex bg-[#09090b] text-zinc-400 font-sans overflow-hidden rounded-xl">
@@ -187,7 +194,6 @@ export default function MonacoEditor() {
               <Countdown
                 date={endTime}
                 onComplete={() => {
-                  setTimeOver(true);
                   submitHandler();
                 }}
                 renderer={({ minutes, seconds }) => (
@@ -201,10 +207,11 @@ export default function MonacoEditor() {
             </div>
 
             <button
+              disabled={timeOver}
               onClick={submitHandler}
               className="px-4 py-1.5 rounded-md text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-500 transition-all shadow-sm"
             >
-              Submit
+              {timeOver ? "Submitted" : "Submit"}
             </button>
 
             <DropdownMenu>
@@ -223,8 +230,29 @@ export default function MonacoEditor() {
                 className="bg-zinc-900 border-zinc-800 text-zinc-200"
               >
                 <DropdownMenuGroup>
-                  <DropdownMenuItem>Import</DropdownMenuItem>
-                  <DropdownMenuItem>Export</DropdownMenuItem>
+                  <DropdownMenuItem asChild>
+                    <button
+                      onClick={Importhandler}
+                      className="w-full text-left px-3 py-2 rounded-md 
+                     hover:bg-zinc-800 hover:text-white 
+                     focus:bg-zinc-800 focus:text-white 
+                     transition-colors"
+                    >
+                      Import
+                    </button>
+                  </DropdownMenuItem>
+
+                  <DropdownMenuItem asChild>
+                    <button
+                      onClick={ExportHandler}
+                      className="w-full text-left px-3 py-2 rounded-md 
+                     hover:bg-zinc-800 hover:text-white 
+                     focus:bg-zinc-800 focus:text-white 
+                     transition-colors"
+                    >
+                      Export
+                    </button>
+                  </DropdownMenuItem>
                 </DropdownMenuGroup>
               </DropdownMenuContent>
             </DropdownMenu>

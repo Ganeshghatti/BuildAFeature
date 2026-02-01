@@ -10,6 +10,7 @@ import ChallengeDetailPage from "../../pages/protected/ChallengeDetailPage";
 import ChallengePracticePage from "../../pages/protected/ChallengePracticePage";
 import NotFoundPage from "../../pages/error/NotFoundPage";
 import MonacoEditor from "@/components/editor/editor";
+import GreetingPage from "@/pages/public/greetingPage";
 
 export const router = createBrowserRouter([
   {
@@ -51,6 +52,10 @@ export const router = createBrowserRouter([
   {
     path: "/challenges/:id/practice",
     element: <ChallengePracticePage />,
+  },
+  {
+    path : "/challenge_submitted/:id",
+    element: <GreetingPage/>
   },
   {
     path: "*",
