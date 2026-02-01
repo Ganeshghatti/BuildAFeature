@@ -23,6 +23,7 @@ import { apiClient } from "@/api/client";
 import FileSidebar from "./fileExplorer/fileSidebar";
 import Button from "../ui/Button";
 import Countdown from "react-countdown";
+import { challengeEndpoints } from "@/api/endpoints/challenges";
 
 export default function MonacoEditor() {
   const [searchParams] = useSearchParams();
@@ -48,6 +49,21 @@ export default function MonacoEditor() {
   const editorRef = useRef(null);
   const submitRef = useRef(false);
   const router = useNavigate();
+
+
+  useEffect(()=>{
+    challengeEndpoints
+    .getById(challengeId)
+    .then((res)=>{
+      console.log(res.data)
+    })
+    .catch((err)=>{
+      console.log(err)
+    })
+    .finally((err)=>{
+      console.log(err)
+    })
+  } , [challengeId])
 
   useEffect(() => {
     apiClient
@@ -125,7 +141,7 @@ export default function MonacoEditor() {
 
     setTimeOver(true);
     localStorage.removeItem("ChallengeEndtime") ;
-    router(`/challenge_submitted/${challengeId}`);
+    // router(`/challenge_submitted/${challengeId}`);
   };
 
   const fileViewHandler = () => {
