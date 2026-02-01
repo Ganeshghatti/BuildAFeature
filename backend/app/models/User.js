@@ -1,7 +1,12 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const userSchema = new mongoose.Schema(
   {
+    name: {
+      type: String,
+      required: false,
+      trim: true,
+    },
     email: {
       type: String,
       required: true,
@@ -27,8 +32,8 @@ const userSchema = new mongoose.Schema(
     },
     role: {
       type: String,
-      enum: ['user', 'admin'],
-      default: 'user',
+      enum: ["user", "admin"],
+      default: "user",
     },
     isActive: {
       type: Boolean,
@@ -37,11 +42,11 @@ const userSchema = new mongoose.Schema(
   },
   {
     timestamps: true,
-  }
+  },
 );
 
 // Indexes
 userSchema.index({ email: 1 });
 userSchema.index({ phone: 1 });
 
-module.exports = mongoose.model('User', userSchema);
+module.exports = mongoose.model("User", userSchema);

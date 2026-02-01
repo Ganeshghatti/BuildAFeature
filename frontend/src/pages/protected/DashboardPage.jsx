@@ -141,7 +141,7 @@ const DashboardPage = () => {
             <div className="text-4xl sm:text-5xl mb-3 sm:mb-4 text-[#302630]">
               <TargetIcon size={40} className="sm:w-11.5 sm:h-11.5" />
             </div>
-            <h2 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3 text-[#302630]">
+            <h2 className="text-xl sm:text-2xl font-semibold mb-2 sm:mb-3 text-[#302630] ">
               Practice Mode
             </h2>
             <p className="text-sm sm:text-base text-[#302630]/70 mb-4 sm:mb-6 leading-relaxed">
@@ -149,7 +149,7 @@ const DashboardPage = () => {
               skills.
             </p>
             <Link to="/challenges">
-              <InteractiveHoverButton className="w-full sm:w-auto">
+              <InteractiveHoverButton className="w-full sm:w-auto hover:text-white">
                 Browse challenges
               </InteractiveHoverButton>
             </Link>

@@ -1,28 +1,35 @@
-const nodemailer = require('nodemailer');
-const config = require('../core/config');
+const nodemailer = require("nodemailer");
+const config = require("../core/config");
 
 // Create transporter (configure based on your email service)
 const createTransporter = () => {
   // Validate email configuration
   if (!config.email.user || !config.email.password) {
-    throw new Error('Email configuration is missing. Please set EMAIL_USER and EMAIL_PASSWORD in .env.local');
+    throw new Error(
+      "Email configuration is missing. Please set EMAIL_USER and EMAIL_PASSWORD in .env.local",
+    );
   }
 
-  if (config.email.service === 'gmail') {
+  if (config.email.service === "gmail") {
     return nodemailer.createTransport({
-      service: 'gmail',
+      host: "smtp.gmail.com",
+      port: 587,
+      secure: false, // true for 465, false for other ports like 587
       auth: {
         user: config.email.user,
         pass: config.email.password, // Should be a Gmail App Password (16 characters)
       },
+      tls: {
+        rejectUnauthorized: false,
+      },
     });
   }
-  
+
   // For other SMTP services, configure accordingly
   return nodemailer.createTransport({
     host: process.env.SMTP_HOST,
     port: parseInt(process.env.SMTP_PORT) || 587,
-    secure: process.env.SMTP_SECURE === 'true', // true for 465, false for other ports
+    secure: process.env.SMTP_SECURE === "true", // true for 465, false for other ports
     auth: {
       user: config.email.user,
       pass: config.email.password,
@@ -38,11 +45,11 @@ const createTransporter = () => {
  */
 const sendOTPEmail = async (to, otp) => {
   const transporter = createTransporter();
-  
+
   const mailOptions = {
     from: config.email.from,
     to,
-    subject: 'Your Buildafeature Signup OTP',
+    subject: "Your Buildafeature Signup OTP",
     html: `
       <div style="font-family: Arial, sans-serif; max-width: 600px; margin: 0 auto;">
         <h2 style="color: #2563eb;">Welcome to Buildafeature!</h2>
@@ -55,12 +62,12 @@ const sendOTPEmail = async (to, otp) => {
       </div>
     `,
   };
-  
+
   try {
     await transporter.sendMail(mailOptions);
   } catch (error) {
-    console.error('Error sending email:', error);
-    throw new Error('Failed to send email');
+    console.error("Error sending email:", error);
+    throw new Error("Failed to send email");
   }
 };
 

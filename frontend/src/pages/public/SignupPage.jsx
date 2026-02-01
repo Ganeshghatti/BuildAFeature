@@ -47,7 +47,12 @@ const SignupPage = () => {
 
   const [step, setStep] = useState(1); // 1: Email/Phone, 2: OTP
   const [otpSent, setOtpSent] = useState(false);
-  const [step1Data, setStep1Data] = useState({ email: "", phone: "" });
+  const [step1Data, setStep1Data] = useState({
+    name: "",
+    email: "",
+    phone: "",
+    password: "",
+  });
   const [isSendingOTP, setIsSendingOTP] = useState(false);
 
   // Step 1 form (Email/Phone)
@@ -60,10 +65,12 @@ const SignupPage = () => {
       );
 
       if (result.success) {
-        // Set step1Data first
+        // Set step1Data first - save all form data including password
         const newStep1Data = {
+          name: formData.name,
           email: formData.email,
           phone: formData.phone || "",
+          password: formData.password,
         };
         setStep1Data(newStep1Data);
         setOtpSent(true);
@@ -76,13 +83,14 @@ const SignupPage = () => {
   };
   const step1Form = useZodForm(
     signupStep1Schema,
-    { email: "", phone: "" },
+    { name: "", email: "", phone: "", password: "" },
     handleSendOTP,
   );
 
   // Step 2 form (OTP)
   const handleVerifyOTP = async (formData) => {
     const result = await verifySignupOTP(
+      formData.name,
       formData.email,
       formData.otp,
       formData.phone || null,
@@ -98,6 +106,7 @@ const SignupPage = () => {
   const step2Form = useZodForm(
     signupStep2Schema,
     {
+      name: "",
       email: "",
       phone: "",
       otp: "",
@@ -110,10 +119,11 @@ const SignupPage = () => {
   useEffect(() => {
     if (step === 2 && step1Data.email) {
       // Update step2Form with step1Data
+      step2Form.setFieldValue("name", step1Data.name);
       step2Form.setFieldValue("email", step1Data.email);
       step2Form.setFieldValue("phone", step1Data.phone || "");
+      step2Form.setFieldValue("password", step1Data.password);
       step2Form.setFieldValue("otp", "");
-      step2Form.setFieldValue("password", "");
     }
     // eslint-disable-next-line react-hooks/exhaustive-deps
   }, [step, step1Data.email, step1Data.phone]);
@@ -175,7 +185,12 @@ const SignupPage = () => {
               <Input
                 label="Name"
                 type="text"
+                name="name"
+                value={step1Form.formData.name}
+                onChange={step1Form.handleChange}
+                error={step1Form.errors.name}
                 placeholder="Rafiqur Rahman"
+                required
                 className="rounded-xl border border-gray-200 bg-gray-50/50 focus:bg-white transition-all py-3 px-5 w-full"
               />
 
@@ -194,7 +209,12 @@ const SignupPage = () => {
               <Input
                 label="Password"
                 type="password"
-                placeholder="Min 8 chars"
+                name="password"
+                value={step1Form.formData.password}
+                onChange={step1Form.handleChange}
+                error={step1Form.errors.password}
+                placeholder="Min 6 chars"
+                required
                 className="rounded-xl border w-full px-5  border-gray-200 bg-gray-50/50 focus:bg-white transition-all py-3"
               />
 
@@ -243,7 +263,7 @@ const SignupPage = () => {
                 placeholder="123456"
                 maxLength="6"
                 required
-                className="text-center text-xl tracking-widest rounded-xl py-3"
+                className="text-center border w-full text-xl tracking-widest rounded-xl py-3"
               />
 
               <Button

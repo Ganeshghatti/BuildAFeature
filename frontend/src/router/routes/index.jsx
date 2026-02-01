@@ -6,6 +6,7 @@ import LoginPage from "../../pages/public/LoginPage";
 import SignupPage from "../../pages/public/SignupPage";
 import DashboardPage from "../../pages/protected/DashboardPage";
 import ChallengesPage from "../../pages/protected/ChallengesPage";
+import ChallengeDetailPage from "../../pages/protected/ChallengeDetailPage";
 import ChallengePracticePage from "../../pages/protected/ChallengePracticePage";
 import NotFoundPage from "../../pages/error/NotFoundPage";
 import MonacoEditor from "@/components/editor/editor";
@@ -45,6 +46,10 @@ export const router = createBrowserRouter([
   },
   {
     path: "/challenges/:id",
+    element: <ChallengeDetailPage />,
+  },
+  {
+    path: "/challenges/:id/practice",
     element: <ChallengePracticePage />,
   },
   {
