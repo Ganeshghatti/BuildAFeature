@@ -11,6 +11,7 @@ const notFoundHandler = require("./middlewares/notFoundHandler");
 const authRouter = require("./api/v1/routers/authRouter");
 const challengeRouter = require("./api/v1/routers/challengeRouter");
 const submissionRouter = require("./api/v1/routers/submissionRouter");
+const FolderRouter = require("./api/v1/routers/folderstructureRouter");
 
 /**
  * Create and configure Express application
@@ -50,6 +51,7 @@ const createApp = () => {
   app.use("/api/auth", authRouter);
   app.use("/api/challenges", challengeRouter);
   app.use("/api/submissions", submissionRouter);
+  app.use("/api/folderstructure" ,FolderRouter );
 
   // 404 handler (must be after all routes)
   app.use(notFoundHandler);

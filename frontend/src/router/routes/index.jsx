@@ -8,6 +8,7 @@ import DashboardPage from "../../pages/protected/DashboardPage";
 import ChallengesPage from "../../pages/protected/ChallengesPage";
 import ChallengePracticePage from "../../pages/protected/ChallengePracticePage";
 import NotFoundPage from "../../pages/error/NotFoundPage";
+import MonacoEditor from "@/components/editor/editor";
 
 export const router = createBrowserRouter([
   {
@@ -50,4 +51,8 @@ export const router = createBrowserRouter([
     path: "*",
     element: <NotFoundPage />,
   },
+  {
+    path : "/editor",
+    element : <MonacoEditor/>
+  }
 ]);

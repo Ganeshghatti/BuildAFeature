@@ -2,8 +2,8 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { challengeEndpoints } from "../../api/endpoints/challenges";
 import Button from "../../components/ui/Button";
+import { motion } from "framer-motion";
 import DotGrid from "@/components/animated/DotGrid";
-import { motion } from "motion/react";
 import { TargetIcon, Clock, Zap, ArrowRight } from "lucide-react";
 
 const difficultyConfig = {
