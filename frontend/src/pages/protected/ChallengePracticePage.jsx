@@ -60,7 +60,7 @@ const ChallengePracticePage = () => {
       .then((res) => {
         console.log(res);
         navigate(
-          `/editor?submissionId=${res.data.submission._id}&challengeId=${res.data.submission.challengeId}`,
+          `/editor?submissionId=${res.data.submission._id}&challengeId=${id}`,
         );
       })
       .catch((err) => {

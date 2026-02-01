@@ -4,7 +4,6 @@ import {
   Layers,
   BookOpen,
   HelpCircle,
-  Clock,
   Code2,
   MoreVertical,
   X,
@@ -30,41 +29,52 @@ export default function MonacoEditor() {
   const challengeId = searchParams.get("challengeId");
   const submissionId = searchParams.get("submissionId");
 
-  const CHALLENGE_TIME_MS = 60 * 1000;
-
-  const [endTime, setendTime] = useState(() => {
-    const time = localStorage.getItem("ChallengeEndtime");
-    if (time) return Number(time);
-
-    const newEndTime = Date.now() + CHALLENGE_TIME_MS;
-    localStorage.setItem("ChallengeEndtime", newEndTime);
-    return newEndTime;
-  });
-
+  const [challenge, setChallenge] = useState(null);
+  const [endTime, setEndTime] = useState(null);
   const [timeOver, setTimeOver] = useState(false);
+
   const [viewfile, setviewfile] = useState(true);
   const [backendTree, setBackendTree] = useState([]);
   const [activeFile, setActiveFile] = useState(null);
   const [activePath, setActivePath] = useState(null);
+
   const editorRef = useRef(null);
   const submitRef = useRef(false);
-  const router = useNavigate();
+  const navigate = useNavigate();
 
 
-  useEffect(()=>{
+  
+  useEffect(() => {
+    if (!challengeId) return;
+
     challengeEndpoints
-    .getById(challengeId)
-    .then((res)=>{
-      console.log(res.data)
-    })
-    .catch((err)=>{
-      console.log(err)
-    })
-    .finally((err)=>{
-      console.log(err)
-    })
-  } , [challengeId])
+      .getById(challengeId)
+      .then((res) => {
+        if (res.data?.challenge) {
+          setChallenge(res.data.challenge);
+        }
+      })
+      .catch((err) => {
+        console.error("Failed to fetch challenge:", err);
+      });
+  }, [challengeId]);
 
+
+  useEffect(() => {
+    if (!challenge?.timeAllowed) return;
+
+    const stored = localStorage.getItem("ChallengeEndtime");
+
+    if (stored) {
+      setEndTime(Number(stored));
+    } else {
+      const newEnd = Date.now() + challenge.timeAllowed * 60 * 1000;
+      localStorage.setItem("ChallengeEndtime", newEnd);
+      setEndTime(newEnd);
+    }
+  }, [challenge]);
+
+ 
   useEffect(() => {
     apiClient
       .post("/folderstructure/get_structure", {
@@ -79,6 +89,7 @@ export default function MonacoEditor() {
       });
   }, []);
 
+ 
   const findFileByPath = (nodes, path) => {
     for (const node of nodes) {
       if (node.path === path && node.type === "file") return node;
@@ -90,7 +101,7 @@ export default function MonacoEditor() {
     return null;
   };
 
-  function updateFileTree(tree, content, path) {
+  const updateFileTree = (tree, content, path) => {
     return tree.map((node) => {
       if (node.type === "folder") {
         return {
@@ -99,49 +110,42 @@ export default function MonacoEditor() {
         };
       }
 
-      if (node.type === "file" && node.path == path) {
-        return {
-          ...node,
-          content: content,
-        };
+      if (node.type === "file" && node.path === path) {
+        return { ...node, content };
       }
 
       return node;
     });
-  }
+  };
 
-  function handleOpenFile(path) {
+  const handleOpenFile = (path) => {
     const file = findFileByPath(backendTree, path);
     if (!file) return;
 
     if (activeFile && editorRef.current) {
       const currentContent = editorRef.current.getValue();
-
-      setBackendTree((prevTree) =>
-        updateFileTree(prevTree, currentContent, activePath),
+      setBackendTree((prev) =>
+        updateFileTree(prev, currentContent, activePath),
       );
     }
 
     setActiveFile(file);
     setviewfile(true);
     setActivePath(file.path);
-  }
-
-  // useEffect(()=>{
-  //   setActiveFile(null);
-  //   setActivePath(null);
-  //   setviewfile(false);
-  // },[timeOver])
+  };
 
   const getFileName = (path) => path?.split("\\").pop() || path;
 
-  const submitHandler = async () => {
+  const submitHandler = () => {
     if (submitRef.current) return;
     submitRef.current = true;
 
     setTimeOver(true);
-    localStorage.removeItem("ChallengeEndtime") ;
-    // router(`/challenge_submitted/${challengeId}`);
+    localStorage.removeItem("ChallengeEndtime");
+
+    console.log("Redirecting to:", `/challenge_submitted/${challengeId}`);
+
+    navigate(`/challenge_submitted/${challengeId}`);
   };
 
   const fileViewHandler = () => {
@@ -152,9 +156,7 @@ export default function MonacoEditor() {
   };
 
   const ExportHandler = async () => {};
-
   const Importhandler = async () => {};
-
   return (
     <div className="w-full min-h-screen flex bg-[#09090b] text-zinc-400 font-sans overflow-hidden rounded-xl">
       <aside className="w-14 flex flex-col items-center py-4 bg-[#09090b] border-r border-[#27272a] shrink-0 z-20">
@@ -206,30 +208,36 @@ export default function MonacoEditor() {
           </div>
 
           <div className="flex items-center gap-2 px-4">
-            <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-mono">
-              <Countdown
-                date={endTime}
-                onComplete={() => {
-                  submitHandler();
-                }}
-                renderer={({ minutes, seconds }) => (
-                  <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-mono border border-emerald-500/20">
-                    <span>
-                      {minutes}:{String(seconds).padStart(2, "0")}
-                    </span>
-                  </div>
-                )}
-              />
-            </div>
+            {endTime && (
+              <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-mono">
+                <Countdown
+                  date={endTime}
+                  onComplete={submitHandler}
+                  renderer={({ minutes, seconds }) => (
+                    <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-mono border border-emerald-500/20">
+                      <span>
+                        {minutes}:{String(seconds).padStart(2, "0")}
+                      </span>
+                    </div>
+                  )}
+                />
+              </div>
+            )}
 
             <button
               disabled={timeOver}
               onClick={submitHandler}
-              className="px-4 py-1.5 rounded-md text-sm font-medium bg-emerald-600 text-white hover:bg-emerald-500 transition-all shadow-sm"
+              className={`px-4 py-1.5 rounded-md text-sm font-medium transition-all shadow-sm
+                ${
+                  timeOver
+                    ? "bg-zinc-700 cursor-not-allowed"
+                    : "bg-emerald-600 text-white hover:bg-emerald-500"
+                }`}
             >
               {timeOver ? "Submitted" : "Submit"}
             </button>
 
+            {/* MENU */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button
@@ -249,10 +257,7 @@ export default function MonacoEditor() {
                   <DropdownMenuItem asChild>
                     <button
                       onClick={Importhandler}
-                      className="w-full text-left px-3 py-2 rounded-md 
-                     hover:bg-zinc-800 hover:text-white 
-                     focus:bg-zinc-800 focus:text-white 
-                     transition-colors"
+                      className="w-full text-left px-3 py-2 rounded-md hover:bg-zinc-800 hover:text-white transition-colors"
                     >
                       Import
                     </button>
@@ -261,10 +266,7 @@ export default function MonacoEditor() {
                   <DropdownMenuItem asChild>
                     <button
                       onClick={ExportHandler}
-                      className="w-full text-left px-3 py-2 rounded-md 
-                     hover:bg-zinc-800 hover:text-white 
-                     focus:bg-zinc-800 focus:text-white 
-                     transition-colors"
+                      className="w-full text-left px-3 py-2 rounded-md hover:bg-zinc-800 hover:text-white transition-colors"
                     >
                       Export
                     </button>
@@ -275,6 +277,7 @@ export default function MonacoEditor() {
           </div>
         </header>
 
+        {/* EDITOR */}
         <div className="flex-1 relative bg-[#131315]">
           <Editor
             height="100%"
@@ -285,20 +288,11 @@ export default function MonacoEditor() {
             theme="vs-dark"
             options={{
               fontSize: 14,
-              fontFamily: "'JetBrains Mono', 'Fira Code', monospace",
               minimap: { enabled: false },
               scrollBeyondLastLine: false,
               automaticLayout: true,
               padding: { top: 24, bottom: 24 },
-              lineNumbers: "on",
-              renderLineHighlight: "all",
-              lineHeight: 24,
-              cursorBlinking: "smooth",
-              smoothScrolling: true,
               readOnly: timeOver,
-              autoClosingBrackets: true,
-              autoClosingComments: true,
-              autoClosingQuotes: true,
               contextmenu: false,
             }}
           />
