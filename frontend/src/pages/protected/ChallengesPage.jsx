@@ -46,6 +46,8 @@ const ChallengesPage = () => {
     };
   }, []);
 
+  
+
   // Filter challenges based on search query
   const filteredChallenges = challenges.filter((ch) => {
     const query = searchQuery.toLowerCase();

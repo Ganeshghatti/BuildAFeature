@@ -78,6 +78,16 @@ class ChallengeController {
       return errorResponse(res, error.message, statusCode);
     }
   }
+
+  async downloadZip(req, res) {
+    try{
+      await challengeService.zipdownload(req , res , req.body);
+    }
+    catch(error){
+      const statusCode = error.statusCode || HTTP_STATUS.INTERNAL_SERVER_ERROR;
+      return errorResponse(res, error.message, statusCode);
+    }
+  }
 }
 
 module.exports = new ChallengeController();

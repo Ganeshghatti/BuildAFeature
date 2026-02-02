@@ -17,7 +17,16 @@ import {
   DropdownMenuTrigger,
 } from "@/components/ui/dropdown-menu";
 
-import { useNavigate, useSearchParams } from "react-router-dom";
+import {
+  Dialog,
+  DialogContent,
+  DialogDescription,
+  DialogHeader,
+  DialogTitle,
+  DialogTrigger,
+} from "@/components/ui/dialog";
+
+import { useParams } from "react-router-dom";
 import { apiClient } from "@/api/client";
 import FileSidebar from "./fileExplorer/fileSidebar";
 import Button from "../ui/Button";
@@ -25,30 +34,28 @@ import Countdown from "react-countdown";
 import { challengeEndpoints } from "@/api/endpoints/challenges";
 
 export default function MonacoEditor() {
-  const [searchParams] = useSearchParams();
-  const challengeId = searchParams.get("challengeId");
-  const submissionId = searchParams.get("submissionId");
-
+  // const [searchParams] = useSearchParams();
+  // const submissionId = searchParams.get("submissionId");
+  const { id } = useParams();
   const [challenge, setChallenge] = useState(null);
   const [endTime, setEndTime] = useState(null);
   const [timeOver, setTimeOver] = useState(false);
+  const [importfolder, setimportfolder] = useState(false);
 
   const [viewfile, setviewfile] = useState(true);
-  const [backendTree, setBackendTree] = useState([]);
+  const [FileStructureTree, setFileStructureTree] = useState([]);
   const [activeFile, setActiveFile] = useState(null);
   const [activePath, setActivePath] = useState(null);
 
   const editorRef = useRef(null);
   const submitRef = useRef(false);
-  const navigate = useNavigate();
+  // const navigate = useNavigate();
 
-
-  
   useEffect(() => {
-    if (!challengeId) return;
+    if (!id) return;
 
     challengeEndpoints
-      .getById(challengeId)
+      .getById(id)
       .then((res) => {
         if (res.data?.challenge) {
           setChallenge(res.data.challenge);
@@ -57,13 +64,16 @@ export default function MonacoEditor() {
       .catch((err) => {
         console.error("Failed to fetch challenge:", err);
       });
-  }, [challengeId]);
-
+  }, [id]);
 
   useEffect(() => {
     if (!challenge?.timeAllowed) return;
 
     const stored = localStorage.getItem("ChallengeEndtime");
+
+    // challemgs -- all challenges
+    // /challenge/:slug -- challenge info
+    // /challenge/:slug/editor?submissionid=submissionid - editor open
 
     if (stored) {
       setEndTime(Number(stored));
@@ -74,22 +84,22 @@ export default function MonacoEditor() {
     }
   }, [challenge]);
 
- 
   useEffect(() => {
+    // for just now i am importing dummy template 
     apiClient
       .post("/folderstructure/get_structure", {
         path: "challenges/infinite-scroll",
       })
       .then((res) => {
         const structure = res.structure || res.data?.structure || [];
-        setBackendTree(structure);
+        const get_structure = structure.filter((st) => st.name === "template");
+        setFileStructureTree(get_structure);
       })
       .catch((err) => {
         console.error("Failed to load folder structure:", err);
       });
   }, []);
 
- 
   const findFileByPath = (nodes, path) => {
     for (const node of nodes) {
       if (node.path === path && node.type === "file") return node;
@@ -118,17 +128,20 @@ export default function MonacoEditor() {
     });
   };
 
-  const handleOpenFile = (path) => {
-    const file = findFileByPath(backendTree, path);
-    if (!file) return;
-
+  const saveCurrentFile = () => {
     if (activeFile && editorRef.current) {
-      const currentContent = editorRef.current.getValue();
-      setBackendTree((prev) =>
-        updateFileTree(prev, currentContent, activePath),
-      );
-    }
+      const content = editorRef.current.getValue();
 
+      setFileStructureTree((prev) => updateFileTree(prev, content, activePath));
+    }
+  };
+
+  const handleOpenFile = (path) => {
+    saveCurrentFile();
+    console.log(path)
+
+    const file = findFileByPath(FileStructureTree, path);
+    if (!file) return;
     setActiveFile(file);
     setviewfile(true);
     setActivePath(file.path);
@@ -140,13 +153,16 @@ export default function MonacoEditor() {
     if (submitRef.current) return;
     submitRef.current = true;
 
+    saveCurrentFile();
+
     setTimeOver(true);
     localStorage.removeItem("ChallengeEndtime");
-
-    console.log("Redirecting to:", `/challenge_submitted/${challengeId}`);
-
-    navigate(`/challenge_submitted/${challengeId}`);
+    // navigate(`/challenge_submitted/${challengeId}` , {replace : true});
   };
+
+  useEffect(() => {
+    console.log("updated", FileStructureTree);
+  }, [FileStructureTree]);
 
   const fileViewHandler = () => {
     if (activeFile) {
@@ -155,8 +171,43 @@ export default function MonacoEditor() {
     }
   };
 
-  const ExportHandler = async () => {};
-  const Importhandler = async () => {};
+  const getLatestTreeForExport = () => {
+    if (!activeFile || !editorRef.current) return FileStructureTree;
+
+    const latestContent = editorRef.current.getValue();
+
+    return updateFileTree(FileStructureTree, latestContent, activePath);
+  };
+
+  const ExportHandler = async () => {
+    try {
+      const latestTree = getLatestTreeForExport();
+      setFileStructureTree(latestTree);
+
+      const blob = await challengeEndpoints.convertToZip(latestTree);
+      const url = window.URL.createObjectURL(blob);
+      const a = document.createElement("a");
+
+      a.href = url;
+      a.download = "project.zip";
+      document.body.appendChild(a);
+      a.click();
+
+      a.remove();
+      window.URL.revokeObjectURL(url);
+
+      console.log("zip downloaded successfully");
+    } catch (err) {
+      console.error("zip export failed:", err);
+    } finally {
+      console.log("finally");
+    }
+  };
+
+  const Importhandler = async () => {
+    setimportfolder(true);
+  };
+
   return (
     <div className="w-full min-h-screen flex bg-[#09090b] text-zinc-400 font-sans overflow-hidden rounded-xl">
       <aside className="w-14 flex flex-col items-center py-4 bg-[#09090b] border-r border-[#27272a] shrink-0 z-20">
@@ -189,7 +240,7 @@ export default function MonacoEditor() {
         </div>
 
         <div className="flex-1 overflow-y-auto py-2 custom-scrollbar">
-          <FileSidebar tree={backendTree} onOpenFile={handleOpenFile} />
+          <FileSidebar tree={FileStructureTree} onOpenFile={handleOpenFile} />
         </div>
       </aside>
 
@@ -294,8 +345,75 @@ export default function MonacoEditor() {
               padding: { top: 24, bottom: 24 },
               readOnly: timeOver,
               contextmenu: false,
+              autoClosingBrackets: true,
+              autoClosingComments: true,
+              autoClosingQuotes: true,
+              autoIndent: true,
+              inlineSuggest: true,
+              quickSuggestions: true,
             }}
           />
+        </div>
+
+        <div>
+          <Dialog open={importfolder} onOpenChange={setimportfolder}>
+            <DialogContent className="sm:max-w-md text-white">
+              <DialogHeader>
+                <DialogTitle>Import Folder</DialogTitle>
+                <DialogDescription>
+                  Select or confirm importing your folder structure.
+                </DialogDescription>
+              </DialogHeader>
+
+              <div className="mt-4 space-y-4">
+                <div className="flex flex-col gap-2">
+                  <label className="text-sm font-medium text-zinc-200">
+                    Upload Folder / Files
+                  </label>
+
+                  <input
+                    type="file"
+                    multiple
+                    webkitdirectory="true"
+                    directory="true"
+                    className="block w-full text-sm text-zinc-300
+                 file:mr-4 file:py-2 file:px-4
+                 file:rounded-md file:border-0
+                 file:text-sm file:font-medium
+                 file:bg-emerald-600 file:text-white
+                 hover:file:bg-emerald-500
+                 cursor-pointer"
+                    onChange={(e) => {
+                      const files = e.target.files;
+                      console.log("Selected files:", files);
+                    }}
+                  />
+
+                  <p className="text-xs text-zinc-500">
+                    You can select an entire folder or multiple files.
+                  </p>
+                </div>
+
+                <div className="flex justify-end gap-2">
+                  <button
+                    onClick={() => setimportfolder(false)}
+                    className="px-4 py-2 rounded-md bg-zinc-700 hover:bg-zinc-600 text-sm"
+                  >
+                    Cancel
+                  </button>
+
+                  <button
+                    onClick={() => {
+                      console.log("Start importing...");
+                    }}
+                    className="px-4 py-2 rounded-md bg-emerald-600 hover:bg-emerald-500 text-sm text-white"
+                  >
+                    Import
+                  </button>
+                </div>
+              </div>
+            </DialogContent>
+          </Dialog>
         </div>
       </main>
     </div>

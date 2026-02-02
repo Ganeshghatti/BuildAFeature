@@ -9,6 +9,7 @@ import { motion } from "motion/react";
 import { Lock, Users } from "lucide-react";
 import DashboardHeader from "../../components/layout/DashboardHeader";
 import Footer from "../../components/layout/Footer";
+import { apiClient } from "@/api/client";
 
 const difficultyConfig = {
   easy: {
@@ -55,6 +56,7 @@ const ChallengeDetailPage = () => {
   const { id } = useParams();
   const [challenge, setChallenge] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!id) {
@@ -77,6 +79,27 @@ const ChallengeDetailPage = () => {
       cancelled = true;
     };
   }, [id]);
+
+  const startChallenge = () => {
+    const data = {
+      challengeId: "65f1a2b3c4d5e6f7890a1234",
+      challengeVersion: 1,
+    };
+    apiClient
+      .post("/submissions/start", data)
+      .then((res) => {
+        console.log(res);
+        navigate(
+          `/challenges/${id}/editor?submissionId=${res.data.submission._id}`,
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        console.log("finally");
+      });
+  };
 
   if (loading) {
     return (
@@ -195,15 +218,17 @@ const ChallengeDetailPage = () => {
 
                 {/* Start Button */}
                 <div className="space-y-3 w-full flex flex-col items-center lg:items-start">
-                  <Link to={`/challenges/${id}/practice`} className="w-full lg:w-1/2 bg-gray-400 hover:bg-[#302630] text-white font-bold py-4 px-6 rounded-full cursor-pointer flex items-center justify-center gap-2 transition-colors uppercase tracking-wide">
+                  <button
+                    onClick={startChallenge}
+                    className="w-full lg:w-1/2 bg-gray-400 hover:bg-[#302630] text-white font-bold py-4 px-6 rounded-full cursor-pointer flex items-center justify-center gap-2 transition-colors uppercase tracking-wide"
+                  >
                     <Lock className="w-5 h-5" />
                     Start Challenge
-                  </Link>
+                  </button>
                 </div>
               </div>
 
               <div className="space-y-4">
-                {/* Preview Image Container */}
                 <div className="bg-gray-50 rounded-xl border-2 border-gray-200 p-6 min-h-100 flex items-center justify-center">
                   <div className="text-center text-gray-400">
                     <p className="text-sm">Challenge Preview</p>

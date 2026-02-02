@@ -49,20 +49,18 @@ export const router = createBrowserRouter([
     path: "/challenges/:id",
     element: <ChallengeDetailPage />,
   },
+
   {
-    path: "/challenges/:id/practice",
-    element: <ChallengePracticePage />,
+    path: "/challenges/:id/editor",
+    element: <MonacoEditor />,
   },
+
   {
-    path : "/challenge_submitted/:id",
-    element: <GreetingPage/>
+    path: "/challenge_submitted/:id",
+    element: <GreetingPage />,
   },
   {
     path: "*",
     element: <NotFoundPage />,
   },
-  {
-    path : "/editor",
-    element : <MonacoEditor/>
-  }
 ]);

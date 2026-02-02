@@ -26,7 +26,6 @@ const ChallengePracticePage = () => {
   const [loading, setLoading] = useState(true);
   const navigate = useNavigate();
 
-
   useEffect(() => {
     if (!id) {
       setLoading(false);
