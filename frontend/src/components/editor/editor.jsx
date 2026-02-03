@@ -32,6 +32,11 @@ import FileSidebar from "./fileExplorer/fileSidebar";
 import Button from "../ui/Button";
 import Countdown from "react-countdown";
 import { challengeEndpoints } from "@/api/endpoints/challenges";
+import {
+  buildTree,
+  CheckStructure,
+  flattenTree,
+} from "@/utils/editorValidations/validate";
 
 export default function MonacoEditor() {
   // const [searchParams] = useSearchParams();
@@ -41,6 +46,7 @@ export default function MonacoEditor() {
   const [endTime, setEndTime] = useState(null);
   const [timeOver, setTimeOver] = useState(false);
   const [importfolder, setimportfolder] = useState(false);
+  const [importStructure, setimportStructure] = useState([]);
 
   const [viewfile, setviewfile] = useState(true);
   const [FileStructureTree, setFileStructureTree] = useState([]);
@@ -85,7 +91,7 @@ export default function MonacoEditor() {
   }, [challenge]);
 
   useEffect(() => {
-    // for just now i am importing dummy template 
+    // for just now i am importing dummy template
     apiClient
       .post("/folderstructure/get_structure", {
         path: "challenges/infinite-scroll",
@@ -138,7 +144,7 @@ export default function MonacoEditor() {
 
   const handleOpenFile = (path) => {
     saveCurrentFile();
-    console.log(path)
+    console.log(path);
 
     const file = findFileByPath(FileStructureTree, path);
     if (!file) return;
@@ -205,7 +211,21 @@ export default function MonacoEditor() {
   };
 
   const Importhandler = async () => {
-    setimportfolder(true);
+    console.log("imported files : ", importStructure);
+    const tree = await buildTree(importStructure);
+
+    const importTreeMap = flattenTree(tree);
+    const mainTreeMap = flattenTree(FileStructureTree);
+    const result = await CheckStructure(importTreeMap, mainTreeMap);
+    console.log(mainTreeMap, importTreeMap);
+
+    if (result.missing.length > 0)
+      return alert("file structured should have to be same !!");
+    else if (result.extra.length > 0)
+      return alert("file content should be same as InitialFiles in editor");
+    else {
+      alert("files loads successfully");
+    }
   };
 
   return (
@@ -259,7 +279,7 @@ export default function MonacoEditor() {
           </div>
 
           <div className="flex items-center gap-2 px-4">
-            {endTime && (
+            {endTime && !timeOver && (
               <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-emerald-500/10 text-emerald-400 text-xs font-mono">
                 <Countdown
                   date={endTime}
@@ -307,7 +327,7 @@ export default function MonacoEditor() {
                 <DropdownMenuGroup>
                   <DropdownMenuItem asChild>
                     <button
-                      onClick={Importhandler}
+                      onClick={() => setimportfolder(true)}
                       className="w-full text-left px-3 py-2 rounded-md hover:bg-zinc-800 hover:text-white transition-colors"
                     >
                       Import
@@ -351,6 +371,8 @@ export default function MonacoEditor() {
               autoIndent: true,
               inlineSuggest: true,
               quickSuggestions: true,
+              autoClosingOvertype: true,
+              autoSurround: true,
             }}
           />
         </div>
@@ -386,6 +408,7 @@ export default function MonacoEditor() {
                     onChange={(e) => {
                       const files = e.target.files;
                       console.log("Selected files:", files);
+                      setimportStructure(files);
                     }}
                   />
 
@@ -403,9 +426,7 @@ export default function MonacoEditor() {
                   </button>
 
                   <button
-                    onClick={() => {
-                      console.log("Start importing...");
-                    }}
+                    onClick={Importhandler}
                     className="px-4 py-2 rounded-md bg-emerald-600 hover:bg-emerald-500 text-sm text-white"
                   >
                     Import
