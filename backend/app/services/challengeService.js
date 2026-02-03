@@ -1,7 +1,10 @@
-const fs = require('fs');
-const path = require('path');
-const config = require('../core/config');
-const challengeRepository = require('../repositories/challengeRepository');
+const fs = require("fs");
+const fse = require("fs-extra");
+const path = require("path");
+const archiver = require("archiver");
+const config = require("../core/config");
+const challengeRepository = require("../repositories/challengeRepository");
+const { arch } = require("os");
 
 let cachedChallenges = null;
 
@@ -12,7 +15,7 @@ function readChallengesFromFile(forceRefresh = false) {
     cachedChallenges = [];
     return cachedChallenges;
   }
-  const raw = fs.readFileSync(filePath, 'utf8');
+  const raw = fs.readFileSync(filePath, "utf8");
   const list = JSON.parse(raw);
   cachedChallenges = Array.isArray(list) ? list : [];
   return cachedChallenges;
@@ -24,7 +27,7 @@ function writeChallengesToList(list) {
   if (!fs.existsSync(dir)) {
     fs.mkdirSync(dir, { recursive: true });
   }
-  fs.writeFileSync(filePath, JSON.stringify(list, null, 2), 'utf8');
+  fs.writeFileSync(filePath, JSON.stringify(list, null, 2), "utf8");
   cachedChallenges = list;
 }
 
@@ -39,7 +42,7 @@ function toJsonShape(doc) {
     difficulty: obj.difficulty,
     timeAllowed: obj.timeAllowed,
     type: obj.type,
-    thumbnailUrl: obj.thumbnailUrl ?? '',
+    thumbnailUrl: obj.thumbnailUrl ?? "",
     tags: obj.tags ?? [],
     compulsoryFeatures: obj.compulsoryFeatures ?? [],
     niceToHaveFeatures: obj.niceToHaveFeatures ?? [],
@@ -48,16 +51,37 @@ function toJsonShape(doc) {
     scoringConfigPath: obj.scoringConfigPath,
     testPath: obj.testPath,
     version: obj.version ?? 1,
-    createdAt: obj.createdAt ? new Date(obj.createdAt).toISOString() : new Date().toISOString(),
-    updatedAt: obj.updatedAt ? new Date(obj.updatedAt).toISOString() : new Date().toISOString(),
+    createdAt: obj.createdAt
+      ? new Date(obj.createdAt).toISOString()
+      : new Date().toISOString(),
+    updatedAt: obj.updatedAt
+      ? new Date(obj.updatedAt).toISOString()
+      : new Date().toISOString(),
   };
 }
+
+function addTreeToArchive(archive, tree, basePath = "") {
+  for (const node of tree) {
+    const entryPath = basePath ? `${basePath}/${node.name}` : node.name;
+
+    if (node.type === "folder") {
+      addTreeToArchive(archive, node.children || [], entryPath);
+    } else if (node.type === "file") {
+      archive.append(node.content || "", {
+        name: entryPath.replace(/\\/g, "/"), // safety for Windows
+      });
+    }
+  }
+}
+
+
 
 class ChallengeService {
   listLive(filters = {}) {
     const all = readChallengesFromFile();
-    let list = all.filter((c) => c.status === 'live');
-    if (filters.difficulty) list = list.filter((c) => c.difficulty === filters.difficulty);
+    let list = all.filter((c) => c.status === "live");
+    if (filters.difficulty)
+      list = list.filter((c) => c.difficulty === filters.difficulty);
     if (filters.type) list = list.filter((c) => c.type === filters.type);
     return list;
   }
@@ -69,7 +93,7 @@ class ChallengeService {
       (c) =>
         c._id === id ||
         String(c._id) === id ||
-        (c.slug && (c.slug === id || String(c.slug) === id))
+        (c.slug && (c.slug === id || String(c.slug) === id)),
     );
     return challenge || null;
   }
@@ -96,6 +120,43 @@ class ChallengeService {
 
   async delete(id) {
     return await challengeRepository.delete(id);
+  }
+
+  async zipdownload(req, res, data) {
+    try {
+      const fileStructure = data;
+
+      res.setHeader("Content-Type", "application/zip");
+
+
+      // it tells the browser that files has to be download and its name is project.zip
+      res.setHeader(
+        "Content-Disposition",
+        'attachment; filename="project.zip"',
+      );
+      
+      // here simply i add the compression level of zip 
+      const archive = archiver("zip", { zlib: { level: 9 } });
+
+      archive.on("error", (err) => {
+        console.error("ZIP error:", err);
+        if (!res.headersSent) {
+          res.status(500).end();
+        }
+      });
+
+      // stream zip to response directly 
+      archive.pipe(res);
+
+      // Add virtual tree
+      addTreeToArchive(archive, fileStructure, "project");
+
+      // Finalize zip
+      archive.finalize();
+    } catch (err) {
+      console.error("Direct ZIP error:", err);
+      res.status(500).json({ success: false });
+    }
   }
 }
 

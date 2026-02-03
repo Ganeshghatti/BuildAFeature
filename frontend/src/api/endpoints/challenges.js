@@ -1,13 +1,15 @@
-import { apiClient } from '../client';
+import { apiClient } from "../client";
 
 export const challengeEndpoints = {
   listLive: (params) => {
     const search = new URLSearchParams(params || {}).toString();
-    return apiClient.get(`/challenges/live${search ? `?${search}` : ''}`);
+    return apiClient.get(`/challenges/live${search ? `?${search}` : ""}`);
   },
   list: (params) => {
     const search = new URLSearchParams(params || {}).toString();
-    return apiClient.get(`/challenges${search ? `?${search}` : ''}`);
+    return apiClient.get(`/challenges${search ? `?${search}` : ""}`);
   },
   getById: (id) => apiClient.get(`/challenges/${id}`),
+
+  convertToZip: (Fileobject) => apiClient.download("/challenges/downloadZip" , Fileobject),
 };
