@@ -37,6 +37,7 @@ import {
   CheckStructure,
   flattenTree,
 } from "@/utils/editorValidations/validate";
+import toast from "react-hot-toast";
 
 export default function MonacoEditor() {
   // const [searchParams] = useSearchParams();
@@ -68,11 +69,13 @@ export default function MonacoEditor() {
         }
       })
       .catch((err) => {
+        toast.error("Failed to Load Challenge");
         console.error("Failed to fetch challenge:", err);
       });
   }, [id]);
 
   useEffect(() => {
+    console.log(challenge);
     if (!challenge?.timeAllowed) return;
 
     const stored = localStorage.getItem("ChallengeEndtime");
@@ -91,17 +94,22 @@ export default function MonacoEditor() {
   }, [challenge]);
 
   useEffect(() => {
-    // for just now i am importing dummy template
+    const challenge = id.split("-");
+    const challengeName = (challenge[1] + " " + challenge[2])
+      .split(" ")
+      .join("-");
     apiClient
       .post("/folderstructure/get_structure", {
-        path: "challenges/infinite-scroll",
+        path: `challenges/${challengeName}`,
       })
       .then((res) => {
         const structure = res.structure || res.data?.structure || [];
+        console.log("strcture", structure);
         const get_structure = structure.filter((st) => st.name === "template");
         setFileStructureTree(get_structure);
       })
       .catch((err) => {
+        toast.error("Failed to load Folder structure");
         console.error("Failed to load folder structure:", err);
       });
   }, []);
@@ -210,8 +218,45 @@ export default function MonacoEditor() {
     }
   };
 
+
+
+  async function buildTreeFromFileList(fileList) {
+    const root = [];
+
+    for (const file of fileList) {
+      const parts = file.webkitRelativePath.split("/");
+      let current = root;
+
+      const fileContent = await file.text();
+
+      parts.forEach((part, index) => {
+        let existing = current.find((n) => n.name === part);
+        const isFile = index === parts.length - 1;
+
+        if (!existing) {
+          existing = {
+            name: part,
+            type: isFile ? "file" : "folder",
+            path: parts.slice(0, index + 1).join("/"),
+            children: isFile ? undefined : [],
+            content: isFile ? fileContent : undefined,
+          };
+
+          current.push(existing);
+        }
+
+        if (!isFile) {
+          current = existing.children;
+        }
+      });
+    }
+
+    return root;
+  }
+
+
+
   const Importhandler = async () => {
-    console.log("imported files : ", importStructure);
     const tree = await buildTree(importStructure);
 
     const importTreeMap = flattenTree(tree);
@@ -225,8 +270,13 @@ export default function MonacoEditor() {
       return alert("file content should be same as InitialFiles in editor");
     else {
       alert("files loads successfully");
+      const tree = await buildTreeFromFileList(importStructure);
+      setFileStructureTree(tree);
     }
   };
+
+
+  
 
   return (
     <div className="w-full min-h-screen flex bg-[#09090b] text-zinc-400 font-sans overflow-hidden rounded-xl">

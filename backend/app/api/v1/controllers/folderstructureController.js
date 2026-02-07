@@ -43,7 +43,7 @@ class FolderStructureController {
   readDirRecursive = (dirPath) => {
     const items = fs.readdirSync(dirPath, { withFileTypes: true });
 
-    return items.map((item) => {
+    return items.filter((item) => !item.name.startsWith('.')).map((item) => {
       const fullPath = path.join(dirPath, item.name);
 
       if (item.isDirectory()) {
