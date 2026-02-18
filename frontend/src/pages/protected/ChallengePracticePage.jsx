@@ -1,10 +1,11 @@
 import { useEffect, useState } from "react";
-import { useParams, Link } from "react-router-dom";
+import { useParams, Link, useNavigate } from "react-router-dom";
 import { challengeEndpoints } from "../../api/endpoints/challenges";
 import Button from "../../components/ui/Button";
+import { motion } from "framer-motion";
 import DotGrid from "@/components/animated/DotGrid";
-import { motion } from "motion/react";
 import { ArrowLeft, Clock, CheckCircle2, Star } from "lucide-react";
+import { apiClient } from "@/api/client";
 
 const difficultyConfig = {
   easy: { class: "bg-emerald-100 text-emerald-800", label: "Easy" },
@@ -13,12 +14,17 @@ const difficultyConfig = {
   expert: { class: "bg-rose-100 text-rose-800", label: "Expert" },
   master: { class: "bg-violet-100 text-violet-800", label: "Master" },
 };
-const getDifficulty = (d) => difficultyConfig[d] || { class: "bg-gray-100 text-gray-700", label: d || "—" };
+const getDifficulty = (d) =>
+  difficultyConfig[d] || {
+    class: "bg-gray-100 text-gray-700",
+    label: d || "—",
+  };
 
 const ChallengePracticePage = () => {
   const { id } = useParams();
   const [challenge, setChallenge] = useState(null);
   const [loading, setLoading] = useState(true);
+  const navigate = useNavigate();
 
   useEffect(() => {
     if (!id) {
@@ -29,6 +35,7 @@ const ChallengePracticePage = () => {
     challengeEndpoints
       .getById(id)
       .then((res) => {
+        // console.log(res.data)
         if (!cancelled) setChallenge(res.data?.challenge);
       })
       .catch(() => {
@@ -42,9 +49,33 @@ const ChallengePracticePage = () => {
     };
   }, [id]);
 
+  const startChallenge = () => {
+    const data = {
+      challengeId: "65f1a2b3c4d5e6f7890a1234",
+      challengeVersion: 1,
+    };
+    apiClient
+      .post("/submissions/start", data)
+      .then((res) => {
+        console.log(res);
+        navigate(
+          `/editor?submissionId=${res.data.submission._id}&challengeId=${id}`,
+        );
+      })
+      .catch((err) => {
+        console.log(err);
+      })
+      .finally(() => {
+        console.log("finally");
+      });
+  };
+
   if (loading) {
     return (
-      <div className="min-h-screen flex items-center justify-center" style={{ backgroundColor: "#f9f6f4" }}>
+      <div
+        className="min-h-screen flex items-center justify-center"
+        style={{ backgroundColor: "#f9f6f4" }}
+      >
         <div className="animate-pulse text-gray-500">Loading challenge…</div>
       </div>
     );
@@ -52,7 +83,10 @@ const ChallengePracticePage = () => {
 
   if (!challenge) {
     return (
-      <div className="min-h-screen flex flex-col items-center justify-center gap-4 px-4" style={{ backgroundColor: "#f9f6f4" }}>
+      <div
+        className="min-h-screen flex flex-col items-center justify-center gap-4 px-4"
+        style={{ backgroundColor: "#f9f6f4" }}
+      >
         <p className="text-gray-600">Challenge not found.</p>
         <Link to="/challenges">
           <Button variant="primary">Back to challenges</Button>
@@ -63,7 +97,10 @@ const ChallengePracticePage = () => {
 
   return (
     <div className="min-h-screen" style={{ backgroundColor: "#f9f6f4" }}>
-      <div className="absolute inset-0 -z-10" style={{ width: "100%", height: "800px" }}>
+      <div
+        className="absolute inset-0 -z-10"
+        style={{ width: "100%", height: "800px" }}
+      >
         <DotGrid
           dotSize={5}
           gap={15}
@@ -143,8 +180,8 @@ const ChallengePracticePage = () => {
             <p className="text-sm text-gray-500 mb-4">
               Editor and submission flow will be wired here (Monaco + VFS).
             </p>
-            <Button variant="primary" disabled>
-              Open in editor (coming soon)
+            <Button onClick={startChallenge} variant="primary">
+              Open in Editor
             </Button>
           </div>
         </motion.article>

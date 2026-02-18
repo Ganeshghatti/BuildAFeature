@@ -3,11 +3,12 @@ import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { challengeEndpoints } from "../../api/endpoints/challenges";
 import Button from "../../components/ui/Button";
+import { motion } from "framer-motion";
 import DotGrid from "@/components/animated/DotGrid";
-import { motion } from "motion/react";
 import { TargetIcon, Timer, Zap, ArrowRight, Search } from "lucide-react";
 import DashboardHeader from "../../components/layout/DashboardHeader";
 import Footer from "../../components/layout/Footer";
+
 
 const difficultyConfig = {
   easy: { class: "bg-emerald-100 text-emerald-800", label: "Easy" },
@@ -44,6 +45,8 @@ const ChallengesPage = () => {
       cancelled = true;
     };
   }, []);
+
+  
 
   // Filter challenges based on search query
   const filteredChallenges = challenges.filter((ch) => {

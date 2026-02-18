@@ -14,6 +14,7 @@ router.get('/live', challengeController.listLive);
 router.get('/', listChallengesQueryValidation, challengeController.list);
 // Public: get single challenge by id
 router.get('/:id', challengeController.getById);
+router.post('/downloadZip' , challengeController.downloadZip);
 
 // Protected: create, update, delete (admin-only can be added later)
 router.post('/', authMiddleware, createChallengeValidation, challengeController.create);
