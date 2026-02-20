@@ -60,6 +60,8 @@ function toJsonShape(doc) {
   };
 }
 
+
+
 function addTreeToArchive(archive, tree, basePath = "") {
   for (const node of tree) {
     const entryPath = basePath ? `${basePath}/${node.name}` : node.name;
@@ -95,6 +97,7 @@ class ChallengeService {
         String(c._id) === id ||
         (c.slug && (c.slug === id || String(c.slug) === id)),
     );
+    console.log(challenge)
     return challenge || null;
   }
 
@@ -104,6 +107,12 @@ class ChallengeService {
 
   async getByIdFromDb(id) {
     return await challengeRepository.findById(id);
+  }
+
+
+  async InitialCreate(){
+    const list = readChallengesFromFile();
+    
   }
 
   async create(data) {

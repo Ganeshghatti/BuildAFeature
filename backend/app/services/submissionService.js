@@ -6,13 +6,13 @@ const { NotFoundException } = require('../core/exceptions');
 
 class SubmissionService {
   async startChallenge(identity, data) {
-    const challengeId = mongoose.Types.ObjectId.isValid(data.challengeId)
+   const challengeId = mongoose.Types.ObjectId.isValid(data.challengeId)
       ? new mongoose.Types.ObjectId(data.challengeId)
       : data.challengeId;
     const challenge = await challengeRepository.findById(challengeId).catch(() => null);
     const timeAllowedMinutes = challenge?.timeAllowed ?? 15;
     const payload = {
-      challengeId,
+      challengeId ,
       challengeVersion: data.challengeVersion ?? 1,
       status: 'in_progress',
       anonymousId: identity.anonymousId,

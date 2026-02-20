@@ -80,9 +80,10 @@ const ChallengeDetailPage = () => {
     };
   }, [id]);
 
+  console.log(challenge)
   const startChallenge = () => {
     const data = {
-      challengeId: "65f1a2b3c4d5e6f7890a1234",
+      challengeId: challenge?._id,
       challengeVersion: 1,
     };
     apiClient
@@ -94,7 +95,7 @@ const ChallengeDetailPage = () => {
         );
       })
       .catch((err) => {
-        console.log(err);
+        console.log(err.message);
       })
       .finally(() => {
         console.log("finally");

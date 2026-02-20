@@ -46,6 +46,7 @@ const ChallengesPage = () => {
     };
   }, []);
 
+
   
 
   // Filter challenges based on search query

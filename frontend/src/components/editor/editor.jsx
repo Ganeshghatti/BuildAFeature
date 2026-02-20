@@ -38,6 +38,7 @@ import {
   flattenTree,
 } from "@/utils/editorValidations/validate";
 import toast from "react-hot-toast";
+import { file } from "zod";
 
 export default function MonacoEditor() {
   // const [searchParams] = useSearchParams();
@@ -60,10 +61,12 @@ export default function MonacoEditor() {
 
   useEffect(() => {
     if (!id) return;
+    console.log(id)
 
     challengeEndpoints
       .getById(id)
       .then((res) => {
+        console.log("response" , res)
         if (res.data?.challenge) {
           setChallenge(res.data.challenge);
         }
@@ -94,10 +97,9 @@ export default function MonacoEditor() {
   }, [challenge]);
 
   useEffect(() => {
-    const challenge = id.split("-");
-    const challengeName = (challenge[1] + " " + challenge[2])
-      .split(" ")
-      .join("-");
+    if(!challenge?.filename) return ;
+    const challengeName = challenge?.filename ;
+    console.log("filename" , challengeName)
     apiClient
       .post("/folderstructure/get_structure", {
         path: `challenges/${challengeName}`,
@@ -112,7 +114,7 @@ export default function MonacoEditor() {
         toast.error("Failed to load Folder structure");
         console.error("Failed to load folder structure:", err);
       });
-  }, []);
+  }, [challenge]);
 
   const findFileByPath = (nodes, path) => {
     for (const node of nodes) {
@@ -178,12 +180,16 @@ export default function MonacoEditor() {
     console.log("updated", FileStructureTree);
   }, [FileStructureTree]);
 
+  
+
   const fileViewHandler = () => {
     if (activeFile) {
       setActiveFile(null);
       setviewfile(false);
     }
   };
+
+
 
   const getLatestTreeForExport = () => {
     if (!activeFile || !editorRef.current) return FileStructureTree;
@@ -192,6 +198,9 @@ export default function MonacoEditor() {
 
     return updateFileTree(FileStructureTree, latestContent, activePath);
   };
+
+
+
 
   const ExportHandler = async () => {
     try {
@@ -254,8 +263,6 @@ export default function MonacoEditor() {
     return root;
   }
 
-
-
   const Importhandler = async () => {
     const tree = await buildTree(importStructure);
 
@@ -263,6 +270,7 @@ export default function MonacoEditor() {
     const mainTreeMap = flattenTree(FileStructureTree);
     const result = await CheckStructure(importTreeMap, mainTreeMap);
     console.log(mainTreeMap, importTreeMap);
+    setimportfolder(false);
 
     if (result.missing.length > 0)
       return alert("file structured should have to be same !!");
@@ -275,11 +283,8 @@ export default function MonacoEditor() {
     }
   };
 
-
-  
-
   return (
-    <div className="w-full min-h-screen flex bg-[#09090b] text-zinc-400 font-sans overflow-hidden rounded-xl">
+    <div className="w-full min-h-screen flex bg-[#09090b] text-zinc-400 font-sans overflow-hidden">
       <aside className="w-14 flex flex-col items-center py-4 bg-[#09090b] border-r border-[#27272a] shrink-0 z-20">
         <div className="flex flex-col gap-6">
           <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-2">
@@ -358,7 +363,6 @@ export default function MonacoEditor() {
               {timeOver ? "Submitted" : "Submit"}
             </button>
 
-            {/* MENU */}
             <DropdownMenu>
               <DropdownMenuTrigger asChild>
                 <Button

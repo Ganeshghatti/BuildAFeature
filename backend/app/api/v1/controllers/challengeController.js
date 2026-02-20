@@ -36,6 +36,7 @@ class ChallengeController {
   async getById(req, res) {
     try {
       const { id } = req.params;
+      
       const challenge = challengeService.getById(id);
       if (!challenge) {
         throw new NotFoundException('Challenge not found');
