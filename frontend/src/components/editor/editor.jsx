@@ -38,7 +38,8 @@ import {
   flattenTree,
 } from "@/utils/editorValidations/validate";
 import toast from "react-hot-toast";
-import { file } from "zod";
+
+
 
 export default function MonacoEditor() {
   // const [searchParams] = useSearchParams();
@@ -61,7 +62,6 @@ export default function MonacoEditor() {
 
   useEffect(() => {
     if (!id) return;
-    console.log(id)
 
     challengeEndpoints
       .getById(id)
@@ -78,7 +78,6 @@ export default function MonacoEditor() {
   }, [id]);
 
   useEffect(() => {
-    console.log(challenge);
     if (!challenge?.timeAllowed) return;
 
     const stored = localStorage.getItem("ChallengeEndtime");
@@ -99,7 +98,6 @@ export default function MonacoEditor() {
   useEffect(() => {
     if(!challenge?.filename) return ;
     const challengeName = challenge?.filename ;
-    console.log("filename" , challengeName)
     apiClient
       .post("/folderstructure/get_structure", {
         path: `challenges/${challengeName}`,

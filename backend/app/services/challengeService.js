@@ -109,12 +109,6 @@ class ChallengeService {
     return await challengeRepository.findById(id);
   }
 
-
-  async InitialCreate(){
-    const list = readChallengesFromFile();
-    
-  }
-
   async create(data) {
     const challenge = await challengeRepository.create(data);
     const list = readChallengesFromFile(true);
