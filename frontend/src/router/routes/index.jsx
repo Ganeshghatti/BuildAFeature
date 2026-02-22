@@ -7,7 +7,6 @@ import SignupPage from "../../pages/public/SignupPage";
 import DashboardPage from "../../pages/protected/DashboardPage";
 import ChallengesPage from "../../pages/protected/ChallengesPage";
 import ChallengeDetailPage from "../../pages/protected/ChallengeDetailPage";
-import ChallengePracticePage from "../../pages/protected/ChallengePracticePage";
 import NotFoundPage from "../../pages/error/NotFoundPage";
 import MonacoEditor from "@/components/editor/editor";
 import GreetingPage from "@/pages/public/greetingPage";

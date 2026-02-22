@@ -25,9 +25,8 @@ class ApiClient {
     };
 
     try {
-      console.log(config);
+      console.log("config" , config);
       const response = await fetch(url, config);
-      console.log(response);
 
       // Handle non-JSON responses
       const contentType = response.headers.get("content-type");

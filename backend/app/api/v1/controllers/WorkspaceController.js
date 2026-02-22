@@ -1,7 +1,7 @@
 const fs = require("fs");
 const path = require("path");
 
-class FolderStructureController {
+class WorkspaceController {
   
   getLanguageFromExtension = (filename) => {
     const ext = path.extname(filename).toLowerCase();
@@ -76,6 +76,7 @@ class FolderStructureController {
 
   read = async (req, res) => {
     try {
+      console.log("request" , req.body);
       const currentdirectory = process.cwd();
       const projectRoot = path.resolve(currentdirectory, "..");
       const fullpath = path.join(projectRoot, req.body.path);
@@ -93,4 +94,4 @@ class FolderStructureController {
   };
 }
 
-module.exports = new FolderStructureController();
+module.exports = new WorkspaceController();
