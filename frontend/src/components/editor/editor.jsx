@@ -7,6 +7,9 @@ import {
   Code2,
   MoreVertical,
   X,
+  Import,
+  ArrowUpToLine,
+  ArrowDownToLine,
 } from "lucide-react";
 
 import {
@@ -39,8 +42,6 @@ import {
 } from "@/utils/editorValidations/validate";
 import toast from "react-hot-toast";
 
-
-
 export default function MonacoEditor() {
   // const [searchParams] = useSearchParams();
   // const submissionId = searchParams.get("submissionId");
@@ -66,7 +67,7 @@ export default function MonacoEditor() {
     challengeEndpoints
       .getById(id)
       .then((res) => {
-        console.log("response" , res)
+        console.log("response", res);
         if (res.data?.challenge) {
           setChallenge(res.data.challenge);
         }
@@ -96,8 +97,8 @@ export default function MonacoEditor() {
   }, [challenge]);
 
   useEffect(() => {
-    if(!challenge?.filename) return ;
-    const challengeName = challenge?.filename ;
+    if (!challenge?.filename) return;
+    const challengeName = challenge?.filename;
     apiClient
       .post("/folderstructure/get_structure", {
         path: `challenges/${challengeName}`,
@@ -161,7 +162,10 @@ export default function MonacoEditor() {
     setActivePath(file.path);
   };
 
-  const getFileName = (path) => path?.split("\\").pop() || path;
+  const getFileName = (path) => {
+    const pathx = path?.split("/").pop();
+    return pathx?.split("\\").pop();
+  };
 
   const submitHandler = () => {
     if (submitRef.current) return;
@@ -178,16 +182,12 @@ export default function MonacoEditor() {
     console.log("updated", FileStructureTree);
   }, [FileStructureTree]);
 
-  
-
   const fileViewHandler = () => {
     if (activeFile) {
       setActiveFile(null);
       setviewfile(false);
     }
   };
-
-
 
   const getLatestTreeForExport = () => {
     if (!activeFile || !editorRef.current) return FileStructureTree;
@@ -196,9 +196,6 @@ export default function MonacoEditor() {
 
     return updateFileTree(FileStructureTree, latestContent, activePath);
   };
-
-
-
 
   const ExportHandler = async () => {
     try {
@@ -224,8 +221,6 @@ export default function MonacoEditor() {
       console.log("finally");
     }
   };
-
-
 
   async function buildTreeFromFileList(fileList) {
     const root = [];
@@ -283,7 +278,7 @@ export default function MonacoEditor() {
 
   return (
     <div className="w-full min-h-screen flex bg-[#09090b] text-zinc-400 font-sans overflow-hidden">
-      <aside className="w-14 flex flex-col items-center py-4 bg-[#09090b] border-r border-[#27272a] shrink-0 z-20">
+      {/* <aside className="w-14 flex flex-col items-center py-4 bg-[#09090b] border-r border-[#27272a] shrink-0 z-20">
         <div className="flex flex-col gap-6">
           <div className="w-8 h-8 rounded-lg bg-emerald-500/20 text-emerald-400 flex items-center justify-center mb-2">
             <Layers size={18} />
@@ -305,7 +300,7 @@ export default function MonacoEditor() {
           />
           <span className="text-[10px] font-medium text-zinc-500">Jon</span>
         </div>
-      </aside>
+      </aside> */}
 
       <aside className="w-64 bg-[#0c0c0e] flex flex-col border-r border-[#27272a] shrink-0">
         <div className="h-14 flex items-center justify-between px-5 border-b border-[#27272a]">
@@ -361,42 +356,18 @@ export default function MonacoEditor() {
               {timeOver ? "Submitted" : "Submit"}
             </button>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-zinc-300 hover:text-white hover:bg-zinc-800"
-                >
-                  <MoreVertical size={16} />
-                </Button>
-              </DropdownMenuTrigger>
-
-              <DropdownMenuContent
-                align="end"
-                className="bg-zinc-900 border-zinc-800 text-zinc-200"
-              >
-                <DropdownMenuGroup>
-                  <DropdownMenuItem asChild>
-                    <button
-                      onClick={() => setimportfolder(true)}
-                      className="w-full text-left px-3 py-2 rounded-md hover:bg-zinc-800 hover:text-white transition-colors"
-                    >
-                      Import
-                    </button>
-                  </DropdownMenuItem>
-
-                  <DropdownMenuItem asChild>
-                    <button
-                      onClick={ExportHandler}
-                      className="w-full text-left px-3 py-2 rounded-md hover:bg-zinc-800 hover:text-white transition-colors"
-                    >
-                      Export
-                    </button>
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <button
+              onClick={() => setimportfolder(true)}
+              className="w-full text-left px-3 flex gap-1 items-center justify-center py-2 rounded-md hover:bg-zinc-800 hover:text-white transition-colors"
+            >
+              Import <ArrowDownToLine size={20} className="text-blue-500" />
+            </button>
+            <button
+              onClick={ExportHandler}
+              className="w-full text-left px-3 flex gap-1 items-center justify-center py-2 rounded-md hover:bg-zinc-800 hover:text-white transition-colors"
+            >
+              Export <ArrowUpToLine size={20} className="text-blue-500"/>
+            </button>
           </div>
         </header>
 
