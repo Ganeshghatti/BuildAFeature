@@ -1,8 +1,8 @@
 const express = require('express');
-const WorkspaceController = require('../controllers/WorkspaceController');
+const workspaceController = require('../controllers/workspaceController');
 const router = express.Router();
 
 
-router.post('/get_structure' , WorkspaceController.read);
+router.post('/get_structure' , workspaceController.read);
 
 module.exports = router ;
