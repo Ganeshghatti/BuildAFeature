@@ -3,14 +3,40 @@ import { motion } from "motion/react";
 import { Marquee } from "../ui/marquee";
 
 const icons = [
+  {
+    name: "HTML",
+    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg",
+  },
+  {
+    name: "CSS",
+    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg",
+  },
+  {
+    name: "JavaScript",
+    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
+  },
+  {
+    name: "jQuery",
+    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jquery/jquery-original.svg",
+  },
   { name: "React", logo: "/react.png" },
-  { name: "Git", logo: "/git.svg" },
-  { name: "Supabase", logo: "/supa.svg" },
-  { name: "Vite", logo: "/vite.svg" },
+  {
+    name: "HTML",
+    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/html5/html5-original.svg",
+  },
+  {
+    name: "CSS",
+    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/css3/css3-original.svg",
+  },
+  {
+    name: "JavaScript",
+    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/javascript/javascript-original.svg",
+  },
+  {
+    name: "jQuery",
+    logo: "https://cdn.jsdelivr.net/gh/devicons/devicon/icons/jquery/jquery-original.svg",
+  },
   { name: "React", logo: "/react.png" },
-  { name: "Git", logo: "/git.svg" },
-  { name: "Supabase", logo: "/supa.svg" },
-  { name: "Vite", logo: "/vite.svg" },
 ];
 
 const ToolCard = ({ tool }) => (

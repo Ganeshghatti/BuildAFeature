@@ -12,7 +12,6 @@ import TechStackSection from "../../components/sections/TechStackSection";
 import FeaturedChallenges from "../../components/sections/FeaturedChallengesSection";
 import CTASection from "../../components/sections/CTASection";
 import Footer from "../../components/layout/Footer";
-import useAuthStore from "../../stores/auth/authStore";
 
 const COMPANY_LOGOS = [
   [
@@ -34,15 +33,6 @@ const COMPANY_LOGOS = [
 
 const LandingPage = () => {
   const navigate = useNavigate();
-  const isAuthenticated = useAuthStore((state) => state.isAuthenticated);
-
-  const handleGetStartedClick = () => {
-    if (isAuthenticated) {
-      navigate("/dashboard");
-    } else {
-      navigate("/signup");
-    }
-  };
 
   return (
     <div className="min-h-screen">
@@ -127,10 +117,16 @@ const LandingPage = () => {
               className="flex gap-4 justify-center mb-20"
             >
               <InteractiveHoverButton
-                onClick={handleGetStartedClick}
+                onClick={() => navigate("/challenges")}
                 className="bg-[#302630] hover:bg-[#f75d31] hover:border-[#f75d31] py-3 px-8 text-white text-lg cursor-pointer"
               >
-                Get Started
+                Go to Challenges
+              </InteractiveHoverButton>
+              <InteractiveHoverButton
+                onClick={() => navigate("/signup")}
+                className="bg-white border border-[#302630] text-[#302630] hover:bg-[#302630] hover:border-[#302630] py-3 px-8 text-lg cursor-pointer"
+              >
+                Register Now
               </InteractiveHoverButton>
             </motion.div>
 
@@ -145,6 +141,9 @@ const LandingPage = () => {
               }}
               className="mt-12 space-y-6"
             >
+              <p className="text-center text-xs font-medium tracking-widest uppercase text-[#302630]/40 mb-6">
+                Questions Inspired By
+              </p>
               {COMPANY_LOGOS.map((row, rowIndex) => (
                 <motion.div
                   key={rowIndex}
@@ -165,6 +164,10 @@ const LandingPage = () => {
                       src={company.src}
                       alt={company.name}
                       className="h-10 object-contain  transition-opacity "
+                      style={{
+                        filter:
+                          "sepia(1) brightness(0.35) saturate(0.8) hue-rotate(295deg)",
+                      }}
                     />
                   ))}
                 </motion.div>
