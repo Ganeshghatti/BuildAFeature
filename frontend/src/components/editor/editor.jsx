@@ -7,6 +7,9 @@ import {
   Code2,
   MoreVertical,
   X,
+  Import,
+  ArrowUpToLine,
+  ArrowDownToLine,
 } from "lucide-react";
 
 import {
@@ -159,7 +162,10 @@ export default function MonacoEditor() {
     setActivePath(file.path);
   };
 
-  const getFileName = (path) => path?.split("\\").pop() || path;
+  const getFileName = (path) => {
+    const pathx = path?.split("/").pop();
+    return pathx?.split("\\").pop();
+  };
 
   const submitHandler = () => {
     if (submitRef.current) return;
@@ -271,9 +277,8 @@ export default function MonacoEditor() {
   };
 
   return (
-    <div className="w-full min-h-screen flex bg-[#0d0b0d] text-white/60 font-sans overflow-hidden">
-      {/* ── Vertical icon rail ── */}
-      <aside className="w-14 flex flex-col items-center py-4 bg-[#0d0b0d] border-r border-white/8 shrink-0 z-20">
+    <div className="w-full min-h-screen flex bg-[#09090b] text-zinc-400 font-sans overflow-hidden">
+      {/* <aside className="w-14 flex flex-col items-center py-4 bg-[#09090b] border-r border-[#27272a] shrink-0 z-20">
         <div className="flex flex-col gap-6">
           <div className="w-8 h-8 bg-[#f75d31]/10 text-[#f75d31] flex items-center justify-center mb-2">
             <Layers size={16} />
@@ -292,7 +297,7 @@ export default function MonacoEditor() {
             U
           </div>
         </div>
-      </aside>
+      </aside> */}
 
       {/* ── File sidebar ── */}
       <aside className="w-64 bg-[#100e10] flex flex-col border-r border-white/8 shrink-0">
@@ -357,42 +362,18 @@ export default function MonacoEditor() {
               {timeOver ? "Submitted" : "Submit"}
             </button>
 
-            <DropdownMenu>
-              <DropdownMenuTrigger asChild>
-                <Button
-                  variant="ghost"
-                  size="icon"
-                  className="text-white/40 hover:text-white hover:bg-white/5"
-                >
-                  <MoreVertical size={16} />
-                </Button>
-              </DropdownMenuTrigger>
-
-              <DropdownMenuContent
-                align="end"
-                className="bg-[#100e10] border-white/10 text-white/70"
-              >
-                <DropdownMenuGroup>
-                  <DropdownMenuItem asChild>
-                    <button
-                      onClick={() => setimportfolder(true)}
-                      className="w-full text-left px-3 py-2 hover:bg-white/5 hover:text-white transition-colors text-sm"
-                    >
-                      Import
-                    </button>
-                  </DropdownMenuItem>
-
-                  <DropdownMenuItem asChild>
-                    <button
-                      onClick={ExportHandler}
-                      className="w-full text-left px-3 py-2 hover:bg-white/5 hover:text-white transition-colors text-sm"
-                    >
-                      Export
-                    </button>
-                  </DropdownMenuItem>
-                </DropdownMenuGroup>
-              </DropdownMenuContent>
-            </DropdownMenu>
+            <button
+              onClick={() => setimportfolder(true)}
+              className="w-full text-left px-3 flex gap-1 items-center justify-center py-2 rounded-md hover:bg-zinc-800 hover:text-white transition-colors"
+            >
+              Import <ArrowDownToLine size={20} className="text-blue-500" />
+            </button>
+            <button
+              onClick={ExportHandler}
+              className="w-full text-left px-3 flex gap-1 items-center justify-center py-2 rounded-md hover:bg-zinc-800 hover:text-white transition-colors"
+            >
+              Export <ArrowUpToLine size={20} className="text-blue-500"/>
+            </button>
           </div>
         </header>
 
