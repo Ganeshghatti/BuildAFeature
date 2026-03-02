@@ -57,39 +57,30 @@ const TechStackSection = () => {
   const secondRow = icons.slice(icons.length / 2);
 
   return (
-    <section className="py-32 sm:py-48 md:py-64 bg-[#F9F6F4] relative overflow-hidden">
-      {/* Background Decor */}
-      <div className="absolute top-0 left-1/2 -translate-x-1/2 w-250 h-125 bg-white rounded-full blur-[120px] opacity-60 pointer-events-none" />
-
+    <section className="py-20 md:py-24 bg-[#F9F6F4] relative overflow-hidden">
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center max-w-3xl mx-auto mb-12 sm:mb-16 md:mb-20">
+        {/* Editorial split header */}
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between mb-14 md:mb-16 gap-6">
           <motion.div
             initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border-gray-200 text-xs font-medium text-gray-600 mb-4 sm:mb-6"
           >
-            <span className="w-1.5 h-1.5 rounded-full bg-[#f75d31]"></span>
-            Integrations
+            <div className="inline-flex items-center gap-2 px-3 py-1 rounded-full bg-white border border-gray-200 text-xs font-medium text-gray-500 mb-5">
+              <span className="w-1.5 h-1.5 rounded-full bg-[#f75d31]" />
+              Integrations
+            </div>
+            <h2 className="text-3xl sm:text-4xl md:text-5xl font-medium text-[#302630] tracking-tight">
+              Use the tools you <span className="text-[#f75d31]">love</span>
+            </h2>
           </motion.div>
 
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-3xl sm:text-4xl md:text-5xl font-medium text-[#302630] mb-4 sm:mb-6 tracking-tight"
-          >
-            Use the tools you{" "}
-            <span className="bg-clip-text text-[#f75d31]">love</span>
-          </motion.h2>
-
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 10 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-base sm:text-lg text-gray-600 leading-relaxed"
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="text-base text-[#302630]/60 leading-relaxed max-w-xs md:text-right"
           >
             No restricted environments. We support full project directories,
             file systems, and your favorite libraries.
@@ -101,6 +92,7 @@ const TechStackSection = () => {
           whileInView={{ opacity: 1 }}
           viewport={{ once: true }}
           transition={{ duration: 1, delay: 0.3 }}
+          className="relative"
         >
           <Marquee pauseOnHover className="[--duration:40s]">
             {firstRow.map((tool) => (
@@ -113,8 +105,8 @@ const TechStackSection = () => {
             ))}
           </Marquee>
 
-          <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-linear-to-r from-[#F9F6F4] to-transparent"></div>
-          <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-linear-to-l from-[#F9F6F4] to-transparent"></div>
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-linear-to-r from-[#F9F6F4] to-transparent z-10" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-linear-to-l from-[#F9F6F4] to-transparent z-10" />
         </motion.div>
       </div>
     </section>

@@ -1,3 +1,4 @@
+/* eslint-disable no-unused-vars */
 import { Link, useNavigate } from "react-router-dom";
 import useAuthStore from "../../stores/auth/authStore";
 import { loginSchema } from "../../utils/schemas/authSchemas";
@@ -19,15 +20,15 @@ const icons = [
 ];
 
 const ToolCard = ({ tool }) => (
-  <div className="mx-4 flex items-center gap-3 px-3 py-2 bg-white rounded-2xl   transition-shadow">
-    <div className="w-8 h-8 rounded-lg flex items-center justify-center p-1.5 ">
+  <div className="mx-3 flex text-black items-center gap-2.5 px-3 py-2 border border-white/10 bg-white transition-colors">
+    <div className="w-7 h-7 flex items-center justify-center p-1">
       <img
         src={tool.logo}
         alt={tool.name}
         className="w-full h-full object-contain"
       />
     </div>
-    <span className="font-medium text-gray-700">{tool.name}</span>
+    <span className="text-sm font-medium text-gray-700">{tool.name}</span>
   </div>
 );
 
@@ -119,43 +120,53 @@ const LoginPage = () => {
       </div>
 
       {/* RIGHT PANEL - Visuals/Content */}
-      <div className="hidden lg:flex w-1/2 bg-[#302630] relative overflow-hidden flex-col items-center justify-center p-12 text-center text-white h-full">
-        {/* Background Gradients/Decor */}
-        <div className="absolute top-0 right-0 w-125 h-125 bg-white opacity-10 blur-[120px] rounded-full pointer-events-none -translate-y-1/2 translate-x-1/2"></div>
-        <div className="absolute bottom-0 left-0 w-100 h-100 bg-white opacity-10 blur-[100px] rounded-full pointer-events-none translate-y-1/2 -translate-x-1/2"></div>
+      <div className="hidden lg:flex w-1/2 bg-[#302630] relative overflow-hidden flex-col justify-between p-14 text-white h-full">
+        {/* Subtle top-right accent */}
+        <div
+          className="absolute top-0 right-0 w-96 h-96 bg-[#f75d31] opacity-5 pointer-events-none"
+          style={{ filter: "blur(80px)" }}
+        />
 
-        <div className="relative z-10 w-full flex flex-col items-center justify-center h-full">
-          <motion.div
-            initial={{ opacity: 0, y: 20 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.6 }}
-            className="flex flex-col items-center justify-center flex-1 max-w-lg"
-          >
-            <h2 className="text-4xl md:text-5xl font-medium tracking-tight mb-6 leading-tight">
-              Stop LeetCoding. <br />
-              Beat every developer.
-            </h2>
-            <p className="text-white/80 text-lg font-light">
-              Enter your credentials to access your account
-            </p>
-          </motion.div>
+        {/* Quote + benefits */}
+        <motion.div
+          initial={{ opacity: 0, y: 20 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ duration: 0.6 }}
+          className="relative z-10 flex-1 flex flex-col justify-center py-16 max-w-md"
+        >
+          <p className="text-xs font-medium tracking-widest uppercase text-white/30 mb-6">
+            Why BuildAFeature
+          </p>
+          <h2 className="text-4xl md:text-5xl font-medium tracking-tight mb-10 leading-tight">
+            Stop LeetCoding.
+            <br />
+            <span className="text-[#f75d31]">Beat every developer.</span>
+          </h2>
+          <ul className="space-y-4">
+            {[
+              "Build real features, not algorithms",
+              "Get AI-powered feedback in seconds",
+              "Prove your skills to any employer",
+            ].map((item) => (
+              <li key={item} className="flex items-start gap-3">
+                <span className="mt-1.5 w-1.5 h-1.5 bg-[#f75d31] shrink-0" />
+                <span className="text-sm text-white/60 leading-relaxed">
+                  {item}
+                </span>
+              </li>
+            ))}
+          </ul>
+        </motion.div>
 
-          {/* Bottom Logos - Marquee */}
-          <div className="mb-20 w-200 relative">
-            <Marquee pauseOnHover className="[--duration:40s]">
-              {icons.slice(0, icons.length / 2).map((tool, index) => (
-                <ToolCard key={`${tool.name}-${index}`} tool={tool} />
-              ))}
-            </Marquee>
-            <Marquee reverse pauseOnHover className="[--duration:40s] mt-4">
-              {icons.slice(icons.length / 2).map((tool, index) => (
-                <ToolCard key={`${tool.name}-${index}`} tool={tool} />
-              ))}
-            </Marquee>
-
-            <div className="pointer-events-none absolute inset-y-0 left-0 w-1/3 bg-linear-to-r from-[#302630] to-transparent"></div>
-            <div className="pointer-events-none absolute inset-y-0 right-0 w-1/3 bg-linear-to-l from-[#302630] to-transparent"></div>
-          </div>
+        {/* Bottom Logos - Marquee */}
+        <div className="relative z-10 w-full overflow-hidden">
+          <Marquee pauseOnHover className="[--duration:40s]">
+            {icons.slice(0, icons.length / 2).map((tool, index) => (
+              <ToolCard key={`${tool.name}-${index}`} tool={tool} />
+            ))}
+          </Marquee>
+          <div className="pointer-events-none absolute inset-y-0 left-0 w-1/4 bg-linear-to-r from-[#302630] to-transparent" />
+          <div className="pointer-events-none absolute inset-y-0 right-0 w-1/4 bg-linear-to-l from-[#302630] to-transparent" />
         </div>
       </div>
     </div>

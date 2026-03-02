@@ -163,7 +163,7 @@ const steps = [
 
 const HowItWorksSection = () => {
   return (
-    <section className="py-24 bg-linear-to-br from-[#302630] to-[#453745] text-white overflow-hidden relative">
+    <section className="bg-[#302630] text-white overflow-hidden relative">
       <Noise
         patternSize={250}
         patternScaleX={2}
@@ -172,71 +172,73 @@ const HowItWorksSection = () => {
         patternAlpha={15}
       />
 
-      {/* Background Decorative Elements */}
-      <div className="absolute top-0 left-0 w-full h-full overflow-hidden pointer-events-none">
-        <div className="absolute -top-[20%] -left-[10%] w-[50%] h-[50%] bg-[#f75d31] rounded-full mix-blend-multiply filter blur-[128px] opacity-20"></div>
-        <div className="absolute -bottom-[20%] -right-[10%] w-[50%] h-[50%] bg-[#f75d31] rounded-full mix-blend-multiply filter blur-[128px] opacity-20"></div>
+      {/* Subtle ambient glow */}
+      <div className="absolute inset-0 overflow-hidden pointer-events-none">
+        <div className="absolute -top-[30%] left-[20%] w-[40%] h-[50%] bg-[#f75d31] rounded-full filter blur-[160px] opacity-[0.08]" />
+        <div className="absolute -bottom-[20%] right-[10%] w-[35%] h-[40%] bg-[#f75d31] rounded-full filter blur-[140px] opacity-[0.07]" />
       </div>
 
       <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 relative z-10">
-        <div className="text-center max-w-3xl mx-auto mb-20">
+        {/* Section header — editorial split layout */}
+        <div className="flex flex-col md:flex-row md:items-end md:justify-between pt-20 pb-14 md:pb-16 border-b border-white/8 gap-6">
           <motion.div
-            initial={{ opacity: 0, scale: 0.9 }}
-            whileInView={{ opacity: 1, scale: 1 }}
+            initial={{ opacity: 0, y: 16 }}
+            whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            className="inline-block  backdrop-blur-sm  border-white/10 px-4 py-1.5 rounded-full text-md font-medium mb-6 text-gray-200"
+            transition={{ duration: 0.6 }}
           >
-            How it works
+            <p className="text-xs font-medium tracking-widest uppercase text-white/30 mb-4">
+              How it works
+            </p>
+            <h2 className="text-4xl md:text-5xl font-medium leading-tight tracking-tight">
+              3 easy steps to start{" "}
+              <span className="text-[#f75d31]">building</span>
+            </h2>
           </motion.div>
-          <motion.h2
-            initial={{ opacity: 0, y: 20 }}
-            whileInView={{ opacity: 1, y: 0 }}
-            viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.1 }}
-            className="text-4xl md:text-5xl font-medium mb-6"
-          >
-            3 easy steps to start{" "}
-            <span className="text-[#f75d31]">building</span>
-          </motion.h2>
           <motion.p
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 16 }}
             whileInView={{ opacity: 1, y: 0 }}
             viewport={{ once: true }}
-            transition={{ duration: 0.6, delay: 0.2 }}
-            className="text-base sm:text-lg text-gray-300"
+            transition={{ duration: 0.6, delay: 0.15 }}
+            className="text-base text-white/50 max-w-xs leading-relaxed md:text-right"
           >
             Refine, Adjust, Perfect. Craft your ideal engineering profile with
             real-world challenges.
           </motion.p>
         </div>
 
-        <div className="grid sm:grid-cols-2 md:grid-cols-3 gap-4 sm:gap-6 md:gap-8">
+        {/* Steps grid */}
+        <div className="grid sm:grid-cols-2 md:grid-cols-3 divide-y sm:divide-y-0 sm:divide-x divide-white/8 pb-20 md:pb-24">
           {steps.map((step, index) => (
             <motion.div
               key={step.id}
-              initial={{ opacity: 0, y: 30 }}
+              initial={{ opacity: 0, y: 24 }}
               whileInView={{ opacity: 1, y: 0 }}
               viewport={{ once: true }}
               transition={{
                 duration: 0.5,
-                delay: 0.3 + index * 0.1,
+                delay: 0.25 + index * 0.1,
                 ease: "easeOut",
               }}
-              className="bg-[#8E888D]/10 md:pb-6 cursor-pointer backdrop-blur-md rounded-2xl p-5 sm:p-6 md:py-2 md:p-8 flex flex-col  sm:h-105 relative overflow-hidden group duration-300"
+              className="py-10 sm:px-8 md:px-10 flex flex-col"
             >
-              <div className="flex justify-between items-start mt-3 sm:mt-5">
-                <h3 className="text-xl sm:text-2xl font-medium text-white">
+              {/* Step number + title */}
+              <div className="flex items-start gap-4 mb-4">
+                <span className="text-xs font-medium text-white/25 mt-1 tabular-nums shrink-0">
+                  0{step.id}
+                </span>
+                <h3 className="text-xl font-medium text-white leading-snug">
                   {step.title}
                 </h3>
               </div>
 
-              <p className="text-gray-300 text-sm sm:text-md my-4 sm:my-3 leading-relaxed min-h-12 sm:min-h-15">
+              <p className="text-sm text-white/50 leading-relaxed mb-8 pl-6">
                 {step.description}
               </p>
 
-              <div className="mt-auto bg-white rounded-xl h-72 sm:h-80 md:h-96 w-full overflow-hidden shadow-lg transform transition-transform duration-300 p-2">
-                {/* Inner container to clip content properly */}
-                <div className="w-full h-full rounded-lg overflow-hidden">
+              {/* Visual */}
+              <div className="mt-auto bg-white/4 border border-white/8 overflow-hidden h-72 sm:h-80 md:h-88 w-full flex items-center justify-center">
+                <div className="w-full h-full overflow-hidden">
                   {step.visual}
                 </div>
               </div>

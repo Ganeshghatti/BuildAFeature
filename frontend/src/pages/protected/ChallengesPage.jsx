@@ -2,26 +2,21 @@
 import { useEffect, useState } from "react";
 import { Link } from "react-router-dom";
 import { challengeEndpoints } from "../../api/endpoints/challenges";
-import Button from "../../components/ui/Button";
-import { motion } from "framer-motion";
+import { motion } from "motion/react";
 import DotGrid from "@/components/animated/DotGrid";
-import { TargetIcon, Timer, Zap, ArrowRight, Search } from "lucide-react";
+import { TargetIcon, Timer, Search, ArrowRight } from "lucide-react";
 import DashboardHeader from "../../components/layout/DashboardHeader";
 import Footer from "../../components/layout/Footer";
 
-
 const difficultyConfig = {
-  easy: { class: "bg-emerald-100 text-emerald-800", label: "Easy" },
-  medium: { class: "bg-amber-100 text-amber-800", label: "Medium" },
-  hard: { class: "bg-orange-100 text-orange-800", label: "Hard" },
-  expert: { class: "bg-rose-100 text-rose-800", label: "Expert" },
-  master: { class: "bg-violet-100 text-violet-800", label: "Master" },
+  easy: { label: "Level 1 · Junior", short: "JUNIOR" },
+  medium: { label: "Level 2 · Intermediate", short: "INTERMEDIATE" },
+  hard: { label: "Level 3 · Senior", short: "SENIOR" },
+  expert: { label: "Level 4 · Expert", short: "EXPERT" },
+  master: { label: "Level 5 · Master", short: "MASTER" },
 };
 const getDifficulty = (d) =>
-  difficultyConfig[d] || {
-    class: "bg-gray-100 text-gray-700",
-    label: d || "—",
-  };
+  difficultyConfig[d] || { label: d || "—", short: (d || "—").toUpperCase() };
 
 const ChallengesPage = () => {
   const [challenges, setChallenges] = useState([]);
@@ -46,10 +41,6 @@ const ChallengesPage = () => {
     };
   }, []);
 
-
-  
-
-  // Filter challenges based on search query
   const filteredChallenges = challenges.filter((ch) => {
     const query = searchQuery.toLowerCase();
     return (
@@ -63,13 +54,14 @@ const ChallengesPage = () => {
   return (
     <>
       <DashboardHeader />
-      <div
-        className="min-h-screen font-['Host_Grotesk']"
-        style={{ backgroundColor: "#f9f6f4" }}
-      >
+      <div className="min-h-screen" style={{ backgroundColor: "#f9f6f4" }}>
         <div
-          className="absolute inset-0 -z-10"
-          style={{ width: "100%", height: "800px" }}
+          style={{
+            width: "100%",
+            height: "600px",
+            position: "absolute",
+            zIndex: "-1",
+          }}
         >
           <DotGrid
             dotSize={5}
@@ -84,154 +76,152 @@ const ChallengesPage = () => {
           />
         </div>
 
-        <div className="max-w-5xl mx-auto px-4 py-8 md:py-12">
+        <div className="max-w-5xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* ─── Page Header ─── */}
           <motion.div
-            initial={{ opacity: 0, y: 12 }}
+            initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5 }}
-            className="mb-10"
+            transition={{ duration: 0.6 }}
+            className="pt-14 pb-12 border-b border-gray-200 flex flex-col sm:flex-row sm:items-end sm:justify-between gap-6"
           >
-            <h1 className="text-3xl md:text-4xl font-bold text-gray-900 mb-2 font-['Host_Grotesk']">
-              Practice challenges
-            </h1>
-            <p className="text-gray-600 font-['Host_Grotesk']">
-              Pick a challenge and build the feature. Time limit and
-              instructions are inside.
-            </p>
-          </motion.div>
+            <div>
+              <p className="text-xs font-medium tracking-widest uppercase text-[#302630]/30 mb-3">
+                Practice
+              </p>
+              <h1 className="text-4xl md:text-5xl font-medium text-[#302630] tracking-tight leading-none">
+                Challenges
+              </h1>
+              <p className="text-base text-[#302630]/50 mt-4 max-w-sm leading-relaxed">
+                Pick a challenge and build the feature. Time limit and
+                instructions are inside.
+              </p>
+            </div>
 
-          {/* Search Input */}
-          <motion.div
-            initial={{ opacity: 0, y: 8 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ duration: 0.5, delay: 0.1 }}
-            className="mb-8"
-          >
-            <div className="relative max-w-md">
-              <Search className="absolute left-4 top-1/2 -translate-y-1/2 w-5 h-5 text-gray-400" />
+            {/* Search */}
+            <div className="relative sm:w-64 shrink-0">
+              <Search className="absolute left-3 top-1/2 -translate-y-1/2 w-4 h-4 text-[#302630]/30" />
               <input
                 type="text"
-                placeholder="Search challenges..."
+                placeholder="Search challenges…"
                 value={searchQuery}
                 onChange={(e) => setSearchQuery(e.target.value)}
-                className="w-full pl-12 pr-5 py-3 rounded-xl border border-gray-200 bg-gray-50/50 focus:bg-white focus:outline-none focus:ring-2 focus:ring-orange-500/20 focus:border-orange-300 transition-all font-['Host_Grotesk'] text-gray-900 placeholder:text-gray-400"
+                className="w-full pl-10 pr-4 py-2.5 border border-gray-200 bg-transparent focus:bg-white focus:outline-none focus:border-[#302630]/30 transition-colors text-sm text-[#302630] placeholder:text-[#302630]/30"
               />
             </div>
           </motion.div>
 
-          {loading ? (
-            <div className="grid gap-4 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-              {[1, 2, 3].map((i) => (
-                <div
-                  key={i}
-                  className="h-48 rounded-2xl bg-white/80 border border-gray-200/80 animate-pulse"
+          {/* ─── Challenge List ─── */}
+          <motion.div
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ duration: 0.5, delay: 0.15 }}
+          >
+            {loading ? (
+              <div className="divide-y divide-gray-200">
+                {[1, 2, 3].map((i) => (
+                  <div
+                    key={i}
+                    className="py-8 flex items-center justify-between"
+                  >
+                    <div className="space-y-2">
+                      <div className="h-5 w-48 bg-gray-200 animate-pulse" />
+                      <div className="h-3.5 w-72 bg-gray-100 animate-pulse" />
+                    </div>
+                    <div className="h-4 w-20 bg-gray-100 animate-pulse hidden sm:block" />
+                  </div>
+                ))}
+              </div>
+            ) : filteredChallenges.length === 0 ? (
+              <div className="border-b border-gray-200 py-16 flex flex-col items-center gap-3">
+                <TargetIcon
+                  className="w-8 h-8 text-[#302630]/20"
+                  strokeWidth={1.5}
                 />
-              ))}
-            </div>
-          ) : filteredChallenges.length === 0 ? (
-            <motion.div
+                <p className="text-sm text-[#302630]/50">
+                  {searchQuery
+                    ? "No challenges match your search."
+                    : "No live challenges yet."}
+                </p>
+                {searchQuery && (
+                  <button
+                    onClick={() => setSearchQuery("")}
+                    className="text-xs font-medium text-[#f75d31] underline underline-offset-2"
+                  >
+                    Clear search
+                  </button>
+                )}
+              </div>
+            ) : (
+              <ul className="divide-y divide-gray-200">
+                {filteredChallenges.map((ch, i) => {
+                  const diff = getDifficulty(ch.difficulty);
+                  return (
+                    <motion.li
+                      key={ch._id}
+                      initial={{ opacity: 0, y: 12 }}
+                      animate={{ opacity: 1, y: 0 }}
+                      transition={{ duration: 0.35, delay: i * 0.04 }}
+                    >
+                      <Link
+                        to={`/challenges/${ch._id}`}
+                        className="group flex flex-col sm:flex-row sm:items-center sm:justify-between gap-3 py-6 hover:bg-[#302630]/2 transition-colors -mx-4 px-4"
+                      >
+                        <div className="flex-1 min-w-0">
+                          <div className="flex flex-wrap items-center gap-2 mb-1">
+                            {ch.tags?.slice(0, 3).map((tag) => (
+                              <span
+                                key={tag}
+                                className="text-xs font-medium uppercase tracking-wider text-[#302630]/30"
+                              >
+                                {tag}
+                              </span>
+                            ))}
+                          </div>
+                          <h2 className="text-lg font-medium text-[#302630] group-hover:text-[#f75d31] transition-colors truncate">
+                            {ch.name}
+                          </h2>
+                          <p className="text-sm text-[#302630]/50 mt-1 line-clamp-1 leading-relaxed">
+                            {ch.description}
+                          </p>
+                        </div>
+
+                        <div className="flex items-center gap-4 shrink-0">
+                          <div className="hidden sm:flex flex-col items-end gap-1">
+                            <span className="text-xs font-medium uppercase tracking-widest text-[#302630]/40">
+                              {diff.short}
+                            </span>
+                            <span className="flex items-center gap-1 text-xs text-[#302630]/30">
+                              <Timer className="w-3 h-3" />
+                              {ch.timeAllowed} min
+                            </span>
+                          </div>
+                          <span className="text-xs font-medium uppercase tracking-widest border border-[#f75d31]/30 text-[#f75d31] px-2.5 py-1 hidden sm:inline-block">
+                            FREE
+                          </span>
+                          <ArrowRight
+                            size={16}
+                            className="text-[#302630]/20 group-hover:text-[#f75d31] transition-colors"
+                          />
+                        </div>
+                      </Link>
+                    </motion.li>
+                  );
+                })}
+              </ul>
+            )}
+          </motion.div>
+
+          {/* ─── Footer note ─── */}
+          {!loading && filteredChallenges.length > 0 && (
+            <motion.p
               initial={{ opacity: 0 }}
               animate={{ opacity: 1 }}
-              className="rounded-2xl bg-white/80 border border-gray-200/80 p-12 text-center"
+              transition={{ delay: 0.5 }}
+              className="text-xs text-[#302630]/30 py-6 border-t border-gray-200"
             >
-              <TargetIcon className="w-12 h-12 mx-auto text-gray-400 mb-4" />
-              <p className="text-gray-600 mb-2 font-['Host_Grotesk']">
-                {searchQuery
-                  ? "No challenges match your search."
-                  : "No live challenges yet."}
-              </p>
-              <p className="text-sm text-gray-500 font-['Host_Grotesk']">
-                {searchQuery
-                  ? "Try different keywords or clear the search."
-                  : "Seed the database from challenges/index.json or add challenges via the API."}
-              </p>
-            </motion.div>
-          ) : (
-            <ul className="grid gap-6 grid-cols-1 sm:grid-cols-1 md:grid-cols-2 lg:grid-cols-3">
-              {filteredChallenges.map((ch, i) => (
-                <motion.li
-                  key={ch._id}
-                  initial={{ opacity: 0, y: 16 }}
-                  animate={{ opacity: 1, y: 0 }}
-                  transition={{ duration: 0.4, delay: i * 0.05 }}
-                  className="h-full"
-                >
-                  <Link
-                    to={`/challenges/${ch._id}`}
-                    className="group flex flex-col h-full bg-white rounded-xl overflow-hidden transition-all duration-300"
-                  >
-                    <div className="relative h-36 sm:h-40 md:h-48 bg-linear-to-br from-gray-900 to-gray-800 overflow-hidden">
-                      {/* Free Badge */}
-                      <div className="absolute top-3 right-3 bg-white text-orange-600 text-xs font-bold px-3 py-1 rounded-full shadow-sm z-10 font-['Host_Grotesk']">
-                        FREE
-                      </div>
-                    </div>
-
-                    <div className="p-4 sm:p-5 flex flex-col grow">
-                      <h2 className="text-lg sm:text-xl font-bold text-gray-900 mb-3 group-hover:text-orange-600 group-hover:underline transition-all font-['Host_Grotesk']">
-                        {ch.name}
-                      </h2>
-
-                      <div className="flex flex-wrap items-center gap-1.5 mb-3">
-                        {ch.tags?.slice(0, 3).map((tag) => {
-                          let colorClass = "text-gray-500";
-                          const lower = tag.toLowerCase();
-                          if (lower.includes("html"))
-                            colorClass = "text-blue-500";
-                          else if (lower.includes("css"))
-                            colorClass = "text-blue-400";
-                          else if (
-                            lower.includes("js") ||
-                            lower.includes("javascript")
-                          )
-                            colorClass = "text-pink-500";
-                          else if (lower.includes("react"))
-                            colorClass = "text-cyan-500";
-
-                          return (
-                            <span
-                              key={tag}
-                              className={`text-xs font-bold uppercase ${colorClass} font-['Host_Grotesk']`}
-                            >
-                              {tag}
-                            </span>
-                          );
-                        })}
-                      </div>
-
-                      <p className="text-gray-600 text-sm leading-relaxed line-clamp-3 mb-3 grow font-['Host_Grotesk']">
-                        {ch.description}
-                      </p>
-
-                      {/* Level Badge - shown below description */}
-                      <div className="mb-3">
-                        <span
-                          className={`inline-block px-2.5 py-1 rounded text-xs font-bold  tracking-wide ${
-                            getDifficulty(ch.difficulty).class
-                          } font-['Host_Grotesk']`}
-                        >
-                          {ch.difficulty === "easy"
-                            ? "LEVEL 1 - JUNIOR"
-                            : ch.difficulty === "medium"
-                              ? "LEVEL 2 - INTERMEDIATE"
-                              : ch.difficulty === "hard"
-                                ? "LEVEL 3 - SENIOR"
-                                : `LEVEL 1 - ${getDifficulty(ch.difficulty).label || "JUNIOR"}`}
-                        </span>
-                      </div>
-                    </div>
-
-                    {/* Time indicator - border spans full card width */}
-                    <div className="border-t border-gray-100">
-                      <div className="px-4 sm:px-5 py-3 flex items-center text-xs text-gray-400 font-medium font-['Host_Grotesk']">
-                        <Timer className="w-4 h-4 mr-1.5" />
-                        {ch.timeAllowed} min
-                      </div>
-                    </div>
-                  </Link>
-                </motion.li>
-              ))}
-            </ul>
+              {filteredChallenges.length} challenge
+              {filteredChallenges.length !== 1 ? "s" : ""} available
+            </motion.p>
           )}
         </div>
       </div>
