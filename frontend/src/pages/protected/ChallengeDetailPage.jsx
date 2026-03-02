@@ -80,7 +80,7 @@ const ChallengeDetailPage = () => {
     };
   }, [id]);
 
-  console.log(challenge)
+  console.log(challenge);
   const startChallenge = () => {
     const data = {
       challengeId: challenge?._id,
@@ -105,10 +105,12 @@ const ChallengeDetailPage = () => {
   if (loading) {
     return (
       <div
-        className="min-h-screen flex items-center justify-center font-['Host_Grotesk']"
+        className="min-h-screen flex items-center justify-center"
         style={{ backgroundColor: "#f9f6f4" }}
       >
-        <div className="animate-pulse text-gray-500">Loading challenge…</div>
+        <div className="animate-pulse text-[#302630]/40 text-sm">
+          Loading challenge…
+        </div>
       </div>
     );
   }
@@ -116,7 +118,7 @@ const ChallengeDetailPage = () => {
   if (!challenge) {
     return (
       <div
-        className="min-h-screen flex flex-col items-center justify-center gap-4 px-4 font-['Host_Grotesk']"
+        className="min-h-screen flex flex-col items-center justify-center gap-4 px-4"
         style={{ backgroundColor: "#f9f6f4" }}
       >
         <p className="text-gray-600">Challenge not found.</p>
@@ -132,13 +134,14 @@ const ChallengeDetailPage = () => {
   return (
     <>
       <DashboardHeader />
-      <div
-        className="min-h-screen font-['Host_Grotesk']"
-        style={{ backgroundColor: "#f9f6f4" }}
-      >
+      <div className="min-h-screen" style={{ backgroundColor: "#f9f6f4" }}>
         <div
-          className="absolute inset-0 -z-10"
-          style={{ width: "100%", height: "800px" }}
+          style={{
+            width: "100%",
+            height: "600px",
+            position: "absolute",
+            zIndex: "-1",
+          }}
         >
           <DotGrid
             dotSize={5}
@@ -153,88 +156,92 @@ const ChallengeDetailPage = () => {
           />
         </div>
 
-        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8 py-6 md:py-10">
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
+          {/* ─── Page Header ─── */}
+          <motion.div
+            initial={{ opacity: 0, y: 20 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+            className="pt-10 pb-8 border-b border-gray-200 flex items-center gap-3"
+          >
+            <Link
+              to="/challenges"
+              className="text-xs font-medium tracking-widest uppercase text-[#302630]/30 hover:text-[#f75d31] transition-colors"
+            >
+              Challenges
+            </Link>
+            <span className="text-[#302630]/20">/</span>
+            <span className="text-xs font-medium uppercase tracking-widest text-[#302630]/60">
+              {challenge.name}
+            </span>
+          </motion.div>
+        </div>
+
+        <div className="max-w-7xl mx-auto px-4 sm:px-6 lg:px-8">
           {/* Main Content */}
           <motion.div
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.2 }}
-            className="bg-white rounded-2xl  p-6 md:p-10"
+            className="bg-white px-10  border-b border-gray-200 py-10 md:py-14"
           >
-            <div className="grid lg:grid-cols-2 gap-8 lg:gap-12">
+            <div className="grid lg:grid-cols-2 gap-8 lg:gap-16">
               {/* Left Column - Challenge Info */}
-              <div className="space-y-6 flex mt-16 flex-col items-center lg:items-start max-w-xl mx-auto lg:mx-0">
+              <div className="space-y-6 flex flex-col">
                 {/* Badges */}
-                <div className="flex flex-wrap items-center justify-center lg:justify-start gap-3">
-                  {challenge.tags?.slice(0, 3).map((tag) => {
-                    let colorClass = "text-gray-600 border-gray-300";
-                    const lower = tag.toLowerCase();
-                    if (lower.includes("html"))
-                      colorClass = "text-blue-600 border-blue-300 bg-blue-50";
-                    else if (lower.includes("css"))
-                      colorClass = "text-blue-500 border-blue-200 bg-blue-50";
-                    else if (
-                      lower.includes("js") ||
-                      lower.includes("javascript")
-                    )
-                      colorClass =
-                        "text-orange-600 border-orange-300 bg-orange-50";
-
-                    return (
-                      <span
-                        key={tag}
-                        className={`text-xs font-bold px-3 py-1.5 rounded-full  uppercase tracking-wider ${colorClass}`}
-                      >
-                        {tag}
-                      </span>
-                    );
-                  })}
-                  <span
-                    className={`${difficulty.class} text-xs font-bold px-3 py-1.5 rounded-full uppercase tracking-wider`}
-                  >
-                    LEVEL {difficulty.level} - {difficulty.title}
+                <div className="flex flex-wrap items-center gap-2">
+                  {challenge.tags?.slice(0, 3).map((tag) => (
+                    <span
+                      key={tag}
+                      className="text-xs font-medium uppercase tracking-widest text-[#302630]/40 border border-gray-200 px-2.5 py-1"
+                    >
+                      {tag}
+                    </span>
+                  ))}
+                  <span className="text-xs font-medium uppercase tracking-widest text-[#302630]/40 border border-gray-200 px-2.5 py-1">
+                    {difficulty.title}
                   </span>
                 </div>
 
                 {/* Title */}
-                <h2 className="text-3xl md:text-4xl font-bold text-[#f75d31] text-center lg:text-left">
+                <h2 className="text-3xl md:text-4xl font-medium text-[#302630] tracking-tight leading-tight">
                   {challenge.name}
                 </h2>
 
                 {/* Description */}
-                <p className="text-gray-600 -mt-4 text-base leading-relaxed text-center lg:text-left">
+                <p className="text-[#302630]/50 -mt-2 text-base leading-relaxed">
                   {challenge.description}
                 </p>
 
                 {/* Participants */}
-                <div className="flex items-center justify-center lg:justify-start gap-3 pt-1">
-                  <div className="w-9 h-9 rounded-full bg-[#F75D31]/10 flex items-center justify-center">
-                    <Users className="w-3 h-3 text-[#F75D31]" />
+                <div className="flex items-center gap-3 pt-1">
+                  <div className="w-8 h-8 bg-[#302630]/5 flex items-center justify-center">
+                    <Users className="w-3.5 h-3.5 text-[#302630]" />
                   </div>
-                  <p className="text-gray-700">
-                    Join <span className="font-bold text-[#f75d31]">211</span>{" "}
+                  <p className="text-sm text-[#302630]/50">
+                    Join <span className="font-medium text-[#302630]">211</span>{" "}
                     people who have taken this challenge
                   </p>
                 </div>
 
                 {/* Start Button */}
-                <div className="space-y-3 w-full flex flex-col items-center lg:items-start">
+                <div className="w-full">
                   <button
                     onClick={startChallenge}
-                    className="w-full lg:w-1/2 bg-gray-400 hover:bg-[#302630] text-white font-bold py-4 px-6 rounded-full cursor-pointer flex items-center justify-center gap-2 transition-colors uppercase tracking-wide"
+                    className="bg-[#302630] hover:bg-[#f75d31] text-white text-sm font-medium py-3 px-8 cursor-pointer flex items-center gap-2 transition-colors uppercase tracking-widest"
                   >
-                    <Lock className="w-5 h-5" />
+                    <Lock className="w-4 h-4" />
                     Start Challenge
                   </button>
                 </div>
               </div>
 
               <div className="space-y-4">
-                <div className="bg-gray-50 rounded-xl border-2 border-gray-200 p-6 min-h-100 flex items-center justify-center">
-                  <div className="text-center text-gray-400">
-                    <p className="text-sm">Challenge Preview</p>
-                    <p className="text-xs mt-1">Coming soon</p>
-                  </div>
+                <div className="border border-gray-200 bg-white p-6 min-h-64 flex flex-col items-center justify-center gap-2">
+                  <p className="text-xs font-medium tracking-widest uppercase text-[#302630]/30">
+                    Preview
+                  </p>
+                  <p className="text-sm text-[#302630]/40">Coming soon</p>
                 </div>
               </div>
             </div>
@@ -245,19 +252,19 @@ const ChallengeDetailPage = () => {
             initial={{ opacity: 0, y: 20 }}
             animate={{ opacity: 1, y: 0 }}
             transition={{ duration: 0.5, delay: 0.3 }}
-            className="bg-white rounded-2xl  p-6 md:p-10 mt-6"
+            className="bg-white mb-5 border-b border-gray-200 p-6 md:p-10 mt-0"
           >
-            <h3 className="text-2xl font-bold text-[#f75d31] mb-6">
+            <h3 className="text-xs font-medium tracking-widest uppercase text-[#302630]/30 mb-8">
               Challenge Details
             </h3>
 
             <div className="space-y-6">
               {/* Full Description */}
               <div>
-                <h4 className="text-lg font-semibold text-[#f75d31] mb-3">
+                <h4 className="text-sm font-medium text-[#302630] mb-3">
                   About this challenge
                 </h4>
-                <p className="text-gray-600 leading-relaxed">
+                <p className="text-sm text-[#302630]/60 leading-relaxed">
                   {challenge.description}
                 </p>
               </div>
@@ -266,16 +273,16 @@ const ChallengeDetailPage = () => {
               {challenge.compulsoryFeatures &&
                 challenge.compulsoryFeatures.length > 0 && (
                   <div>
-                    <h4 className="text-lg font-semibold text-[#f75d31] mb-3">
+                    <h4 className="text-sm font-medium text-[#302630] mb-3">
                       Compulsory Features
                     </h4>
                     <ul className="space-y-2">
                       {challenge.compulsoryFeatures.map((feature, index) => (
                         <li key={index} className="flex items-start gap-3">
-                          <span className="w-6 h-6 rounded-full bg-blue-100 text-blue-600 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                          <span className="w-5 h-5 bg-[#302630]/5 text-[#302630]/50 flex items-center justify-center text-xs font-medium shrink-0 mt-0.5">
                             {index + 1}
                           </span>
-                          <span className="text-gray-700 leading-relaxed">
+                          <span className="text-sm text-[#302630]/60 leading-relaxed">
                             {feature}
                           </span>
                         </li>
@@ -288,16 +295,16 @@ const ChallengeDetailPage = () => {
               {challenge.niceToHaveFeatures &&
                 challenge.niceToHaveFeatures.length > 0 && (
                   <div>
-                    <h4 className="text-lg font-semibold text-[#f75d31] mb-3">
+                    <h4 className="text-sm font-medium text-[#302630] mb-3">
                       Nice to Have Features
                     </h4>
                     <ul className="space-y-2">
                       {challenge.niceToHaveFeatures.map((feature, index) => (
                         <li key={index} className="flex items-start gap-3">
-                          <span className="w-6 h-6 rounded-full bg-amber-100 text-amber-600 flex items-center justify-center text-xs font-bold shrink-0 mt-0.5">
+                          <span className="w-5 h-5 bg-[#302630]/5 text-[#302630]/30 flex items-center justify-center text-xs font-medium shrink-0 mt-0.5">
                             {index + 1}
                           </span>
-                          <span className="text-gray-700 leading-relaxed">
+                          <span className="text-sm text-[#302630]/60 leading-relaxed">
                             {feature}
                           </span>
                         </li>
@@ -308,33 +315,31 @@ const ChallengeDetailPage = () => {
 
               {/* Additional Info */}
               <div className="pt-6 border-t border-gray-200">
-                <div className="grid sm:grid-cols-2 gap-4">
+                <div className="grid sm:grid-cols-2 gap-6">
                   <div>
-                    <h5 className="text-sm font-semibold text-[#f75d31] mb-1">
+                    <p className="text-xs font-medium tracking-widest uppercase text-[#302630]/30 mb-1">
                       Time Limit
-                    </h5>
-                    <p className="text-gray-600">
+                    </p>
+                    <p className="text-sm text-[#302630]">
                       {challenge.timeAllowed} minutes
                     </p>
                   </div>
                   <div>
-                    <h5 className="text-sm font-semibold text-[#f75d31] mb-1">
+                    <p className="text-xs font-medium tracking-widest uppercase text-[#302630]/30 mb-1">
                       Difficulty
-                    </h5>
-                    <p className="text-gray-600">
-                      {difficulty.label} (Level {difficulty.level})
                     </p>
+                    <p className="text-sm text-[#302630]">{difficulty.title}</p>
                   </div>
                   {challenge.tags && challenge.tags.length > 0 && (
                     <div className="sm:col-span-2">
-                      <h5 className="text-sm font-semibold text-[#f75d31] mb-2">
+                      <p className="text-xs font-medium tracking-widest uppercase text-[#302630]/30 mb-2">
                         Technologies
-                      </h5>
+                      </p>
                       <div className="flex flex-wrap gap-2">
                         {challenge.tags.map((tag) => (
                           <span
                             key={tag}
-                            className="px-3 py-1 bg-gray-100 text-gray-700 rounded-full text-sm font-medium"
+                            className="px-2.5 py-1 border border-gray-200 text-[#302630]/60 text-xs font-medium uppercase tracking-wider"
                           >
                             {tag}
                           </span>

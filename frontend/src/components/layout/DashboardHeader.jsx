@@ -1,19 +1,9 @@
-/* eslint-disable no-unused-vars */
-import { Link, useNavigate } from "react-router-dom";
+import { Link } from "react-router-dom";
 import { motion } from "motion/react";
-import { Home, TargetIcon, LogOut } from "lucide-react";
+import { Home, TargetIcon } from "lucide-react";
 import Button from "../ui/Button";
-import useAuthStore from "../../stores/auth/authStore";
 
 const DashboardHeader = () => {
-  const navigate = useNavigate();
-  const logout = useAuthStore((state) => state.logout);
-
-  const handleLogout = () => {
-    logout();
-    navigate("/");
-  };
-
   return (
     <motion.header
       initial={{ opacity: 0, y: -20 }}
@@ -50,14 +40,6 @@ const DashboardHeader = () => {
                 <span className="hidden sm:inline">Challenges</span>
               </Button>
             </Link>
-            <Button
-              variant="secondary"
-              onClick={handleLogout}
-              className="text-sm flex items-center gap-2"
-            >
-              <LogOut size={16} />
-              <span className="hidden sm:inline">Logout</span>
-            </Button>
           </div>
         </div>
       </div>

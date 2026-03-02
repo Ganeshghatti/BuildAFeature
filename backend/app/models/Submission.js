@@ -1,18 +1,18 @@
-const mongoose = require('mongoose');
+const mongoose = require("mongoose");
 
 const testCaseResultSchema = new mongoose.Schema(
   {
     filePath: { type: String, required: true },
     result: { type: mongoose.Schema.Types.Mixed, required: true },
   },
-  { _id: false }
+  { _id: false },
 );
 
 const submissionSchema = new mongoose.Schema(
   {
     userId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'User',
+      ref: "User",
       default: null,
     },
     anonymousId: {
@@ -23,13 +23,13 @@ const submissionSchema = new mongoose.Schema(
     },
     challengeId: {
       type: mongoose.Schema.Types.ObjectId,
-      ref: 'Challenge',
+      ref: "Challenge",
       required: true,
     },
     status: {
       type: String,
-      enum: ['in_progress', 'under_review', 'completed'],
-      default: 'in_progress',
+      enum: ["in_progress", "under_review", "completed"],
+      default: "in_progress",
     },
     challengeVersion: {
       type: Number,
@@ -57,11 +57,11 @@ const submissionSchema = new mongoose.Schema(
       default: null,
     },
   },
-  { timestamps: true }
+  { timestamps: true },
 );
 
 submissionSchema.index({ userId: 1, challengeId: 1 });
 submissionSchema.index({ anonymousId: 1, challengeId: 1 });
 submissionSchema.index({ status: 1 });
 
-module.exports = mongoose.model('Submission', submissionSchema);
+module.exports = mongoose.model("Submission", submissionSchema);
